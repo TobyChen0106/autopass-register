@@ -6,7 +6,7 @@ const app = express();
 var bodyParser = require('body-parser')
 const apiRoute = require('./src/route/api');
 //wake
-const wakeUpDyno = require("./src/route/wakeUpDyno.js");
+// const wakeUpDyno = require("./src/route/wakeUpDyno.js");
 // const DYNO_URL = "https://cardbo-info.herokuapp.com/";
 // app.listen(port, () => {
 //   wakeUpDyno(DYNO_URL); // will start once server starts
@@ -54,5 +54,5 @@ app.get('/*', function (req, res) {
 //   wakeUpDyno(DYNO_URL3); // will start once server starts
 // })
 
-// app.listen(port);
+app.listen(port);
 
