@@ -50,10 +50,20 @@ class App extends Component {
             bank_list: [],
             card_list: [],
             loading: true,
+
+            select_card_height: 550 * 0.33,
+            select_card_width: 550 * 0.5,
+            select_card_list_width: 550 * 0.9,
+            window_width: 550,
+            window_height: 850,
+            enable_select_index: -1
         };
 
     }
+
     componentDidMount() {
+        this.handleResizeWindow();
+
         this.setState({
             bank_list: ['台新銀行', '渣打銀行', '彰化銀行', '花旗銀行', '第一銀行', '遠東商銀', '聯邦銀行', '永豐銀行', '元大銀行', '上海商銀', '台北富邦', '兆豐銀行',
                 '新光銀行', '中國信託', '星展銀行', '華南銀行', '陽信銀行', '滙豐銀行', '日盛銀行', '國泰世華', '合作金庫', '臺灣企銀',
@@ -80,6 +90,27 @@ class App extends Component {
         //     }
         // });
         this.setState({ loading: false });
+        window.addEventListener('resize', this.handleResizeWindow);
+    }
+    handleResizeWindow = () => {
+        this.setState({ window_width: window.innerWidth, window_height: window.innerHeight });
+        if (window.innerWidth * 0.33 < 198) {
+            this.setState({ select_card_height: window.innerWidth * 0.33 });
+        } else {
+            this.setState({ select_card_height: 200 });
+        }
+        if (window.innerWidth * 0.6 < 306) {
+            this.setState({ select_card_width: window.innerWidth * 0.51 });
+        } else {
+            this.setState({ select_card_width: 300 });
+        }
+        if (window.innerWidth * 0.9 < window.innerHeight * 0.5) {
+            this.setState({ select_card_list_width: window.innerWidth * 0.9 });
+        } else {
+            this.setState({ select_card_list_width: window.innerHeight * 0.5 });
+
+        }
+        // console.log( window.innerWidth, window.innerHeight);
     }
     formOnSubmit = () => {
         // if (this.state.age === 0) {
@@ -124,22 +155,13 @@ class App extends Component {
         // }
     }
 
-    handleSelectBank = (e, id) => {
-        const label = e.label;
-        var new_cards = this.state.cards;
-        new_cards[id].options = this.state.allCards.filter(card => card.bankName === label).map((i, index) => (
-            { label: i.cardName, value: index }
-        ));
-        new_cards[id].bank = label;
-        new_cards[id].selectedBank = e;
-        this.setState({ cards: new_cards });
+    handleSelectBank = (e, bankName, index) => {
+        // console.log(bankName);
+        this.setState({ enable_select_index: index });
     }
-    handleSelectCard = (e, id) => {
-        const label = e.label;
-        var new_cards = this.state.cards;
-        new_cards[id].selectedCard = e;
-        new_cards[id].card = label;
-        this.setState({ cards: new_cards });
+    handleSelectCard = (e, bankName, index) => {
+        console.log(bankName, index);
+
     }
     handleCancel = (e, id) => {
         var new_cards = this.state.cards;
@@ -151,14 +173,21 @@ class App extends Component {
     render() {
 
         // const classes = useStyles();
-        const Row = ({ index, style }) => (
-            <div style={style} className="card-image-card">
-                <img className="card-image">
+        const Row = (bankName, index, style) => (
+            <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
+                <div className="card-image-card">
+                    <img className="card-image">
 
-                </img>
-                {`-card-${index}`}
-            </div>
+                    </img>
+                    {`${bankName}-card-${index}`}
+                </div>
+            </div >
         );
+
+        const divStyle = (index) => (
+            { display: this.state.enable_select_index == index ? 'flex' : 'none' }
+        );
+
         if (this.state.loading) {
             // if (true) {
             return (<div className="my-loading">
@@ -177,36 +206,27 @@ class App extends Component {
                             {`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
                         </div>
                     </div>
-                    <div className="row card-list-contaniner">
+                    <div className="row bank-select-card-list-contaniner">
                         {this.state.bank_list.map((bankName, index) => (
-                            <div className="bank-select-card-container" key={`item-${bankName}-${index}`}>
-                                <div className="bank-select-card">
-                                    <div className="bank-select-info">
-                                        <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
-                                        <div classes="bank-select-bankInfo chinese-font">
-                                            <div className="bank-select-bankName chinese-font">{bankName}</div>
-                                            <div className="bank-select-info-title chinese-font">{`title`}</div>
-                                            <div className="bank-select-info-subtitle chinese-font">{`subtitle`}</div>
-                                        </div>
+                            // <div className="bank-select-card-container">
+                            <div className="bank-select-card" key={`bank-select-card-${index}`} onClick={(e) => this.handleSelectBank(e, bankName, index)}>
+                                <div className="bank-select-info">
+                                    <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
+                                    <div classes="bank-select-bankInfo chinese-font">
+                                        <div className="bank-select-bankName chinese-font">{bankName}</div>
+                                        <div className="bank-select-info-title chinese-font">{`title`}</div>
+                                        <div className="bank-select-info-subtitle chinese-font">{`subtitle`}</div>
                                     </div>
-                                    <div className="card-selet-container">
-                                        <FixedSizeList
-                                            height={150}
-                                            itemCount={33}
-                                            itemSize={100}
-                                            layout="horizontal"
-                                            width={600}>
-                                            {Row}
-                                            {/* {this.state.bank_list.map((_, index2) => (
-                                                <div className="card-image-card">
-                                                    <img className="card-image">
-
-                                                    </img>
-                                                    {`${bankName}-card-${index2}`}
-                                                </div>
-                                            ))} */}
-                                        </FixedSizeList>
-                                    </div>
+                                </div>
+                                <div className="card-selet-container" style={divStyle(index)}>
+                                    <FixedSizeList
+                                        height={this.state.select_card_height}
+                                        itemCount={33}
+                                        itemSize={this.state.select_card_width}
+                                        layout="horizontal"
+                                        width={this.state.select_card_list_width}>
+                                        {({ index, style }) => Row(bankName, index, style)}
+                                    </FixedSizeList>
                                 </div>
                             </div>
                         ))}
@@ -214,7 +234,7 @@ class App extends Component {
                     <div className="row select-cards-save-wrapper">
                         <div className="row select-cards-save-shadow" />
                         <div className="row select-cards-save-button-wrapper">
-                            <button className="select-cards-save-button chinese-font" onClick={this.formOnSubmit}>儲存</button>
+                            <button className="select-cards-save-button chinese-font" onClick={this.formOnSubmit}>{`儲存`}</button>
                         </div>
                     </div>
                 </div>
