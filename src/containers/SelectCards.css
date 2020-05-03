@@ -97,7 +97,8 @@ body {
 }
 
 .bank-select-card {
-    max-width: 90vw;
+    width: 90vw;
+    max-width: 80vh;
     margin-top: 0.1rem;
     margin-bottom: 0.1rem;
     border-style: solid;
@@ -117,8 +118,8 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    width: 90vw;
-    max-width: 50vh;
+    width: 100%;
+    
     min-height: 5rem;
     /* margin-left: 5vw;
     margin-right: 5vw; */

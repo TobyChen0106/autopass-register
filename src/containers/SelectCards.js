@@ -104,10 +104,10 @@ class App extends Component {
         } else {
             this.setState({ select_card_width: 300 });
         }
-        if (window.innerWidth * 0.9 < window.innerHeight * 0.5) {
+        if (window.innerWidth * 0.9 < window.innerHeight * 0.8) {
             this.setState({ select_card_list_width: window.innerWidth * 0.9 });
         } else {
-            this.setState({ select_card_list_width: window.innerHeight * 0.5 });
+            this.setState({ select_card_list_width: window.innerHeight * 0.8 });
 
         }
         // console.log( window.innerWidth, window.innerHeight);
