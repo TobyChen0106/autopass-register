@@ -127,14 +127,12 @@ class App extends Component {
     handleSelectBank = (e, id) => {
         const label = e.label;
         var new_cards = this.state.cards;
-
         new_cards[id].options = this.state.allCards.filter(card => card.bankName === label).map((i, index) => (
             { label: i.cardName, value: index }
         ));
         new_cards[id].bank = label;
         new_cards[id].selectedBank = e;
         this.setState({ cards: new_cards });
-        // console.log(e)
     }
     handleSelectCard = (e, id) => {
         const label = e.label;
@@ -142,23 +140,25 @@ class App extends Component {
         new_cards[id].selectedCard = e;
         new_cards[id].card = label;
         this.setState({ cards: new_cards });
-        // console.log(e)
     }
     handleCancel = (e, id) => {
-        // this.setState(prevState => ({
-        //     cards: prevState.cards.splice(id,1)
-        // }))
         var new_cards = this.state.cards;
         new_cards.splice(id, 1)
         this.setState({ cards: new_cards })
-        // console.log(e)
         console.log(id)
     }
 
     render() {
 
         // const classes = useStyles();
+        const Row = ({ index, style }) => (
+            <div style={style} className="card-image-card">
+                <img className="card-image">
 
+                </img>
+                {`-card-${index}`}
+            </div>
+        );
         if (this.state.loading) {
             // if (true) {
             return (<div className="my-loading">
@@ -167,41 +167,55 @@ class App extends Component {
         }
         else {
             return (
-                <div className="select-cards-container chineese-font">
+                <div className="select-cards-container">
                     <div className="row select-cards-title-wrapper">
-                        <img src={autopass_image} />
-                        <div className="select-cards-title">麻吉福利社</div>
+                        <img className="logo-image" src={autopass_image} />
+                        <div className="chinese-font select-cards-title">麻吉福利社</div>
                     </div>
                     <div className="row">
-                        <div className="seletion-subtitle-wrapper chineese-font" >
+                        <div className="seletion-subtitle-wrapper chinese-font" >
                             {`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
                         </div>
                     </div>
-                    <div className="register-form-contaniner">
-                        <div className="row" >
-                            {this.state.bank_list.map((bankName, index) => (
-                                <div className="bank-select-card-container" key={`item-${bankName}-${index}`}>
-                                    <div className="bank-select-card">
+                    <div className="row card-list-contaniner">
+                        {this.state.bank_list.map((bankName, index) => (
+                            <div className="bank-select-card-container" key={`item-${bankName}-${index}`}>
+                                <div className="bank-select-card">
+                                    <div className="bank-select-info">
                                         <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
-                                        <div classes="bank-select-bankInfo chineese-font">
-                                            <div className="bank-select-bankName">{bankName}</div>
-                                            <div className="bank-select-Info-title">{`title`}</div>
-                                            <div className="bank-select-Info-subtitle">{`subtitle`}</div>
+                                        <div classes="bank-select-bankInfo chinese-font">
+                                            <div className="bank-select-bankName chinese-font">{bankName}</div>
+                                            <div className="bank-select-info-title chinese-font">{`title`}</div>
+                                            <div className="bank-select-info-subtitle chinese-font">{`subtitle`}</div>
                                         </div>
                                     </div>
-                                    <div>
-                                        {/* {`adsfs`} */}
+                                    <div className="card-selet-container">
+                                        <FixedSizeList
+                                            height={150}
+                                            itemCount={33}
+                                            itemSize={100}
+                                            layout="horizontal"
+                                            width={600}>
+                                            {Row}
+                                            {/* {this.state.bank_list.map((_, index2) => (
+                                                <div className="card-image-card">
+                                                    <img className="card-image">
+
+                                                    </img>
+                                                    {`${bankName}-card-${index2}`}
+                                                </div>
+                                            ))} */}
+                                        </FixedSizeList>
                                     </div>
                                 </div>
-                            ))}
-
-                        </div>
-                        {/* <div className="row">
-                            <button className="submit-button chineese-font" onClick={this.formOnSubmit}>儲存</button>
-                        </div> */}
+                            </div>
+                        ))}
                     </div>
                     <div className="row select-cards-save-wrapper">
-                        <button className="submit-button chineese-font" onClick={this.formOnSubmit}>儲存</button>
+                        <div className="row select-cards-save-shadow" />
+                        <div className="row select-cards-save-button-wrapper">
+                            <button className="select-cards-save-button chinese-font" onClick={this.formOnSubmit}>儲存</button>
+                        </div>
                     </div>
                 </div>
             );
