@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import './SelectCards.css'
 //images
 import e_sun_image from '../images/banks/e.sun-bank.jpg'
+import card_01 from '../images/cards/card-01.jpg'
+
 import autopass_image from '../images/autopass-logo.png'
 // material-UI
 import PropTypes from 'prop-types';
@@ -14,17 +16,11 @@ import { FixedSizeList } from 'react-window';
 //loading
 import ReactLoading from 'react-loading';
 
+// components
+import SelectList from '../components/SelectList'
+
 // Liff
 const liff = window.liff;
-
-const classes = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: 400,
-        maxWidth: 300,
-        backgroundColor: theme.palette.background.paper,
-    },
-}));
 
 class App extends Component {
     constructor(props) {
@@ -155,14 +151,7 @@ class App extends Component {
         // }
     }
 
-    handleSelectBank = (e, bankName, index) => {
-        // console.log(bankName);
-        this.setState({ enable_select_index: index });
-    }
-    handleSelectCard = (e, bankName, index) => {
-        console.log(bankName, index);
 
-    }
     handleCancel = (e, id) => {
         var new_cards = this.state.cards;
         new_cards.splice(id, 1)
@@ -176,9 +165,7 @@ class App extends Component {
         const Row = (bankName, index, style) => (
             <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
                 <div className="card-image-card">
-                    <img className="card-image">
-
-                    </img>
+                    <img className="card-image" />
                     {`${bankName}-card-${index}`}
                 </div>
             </div >
@@ -199,18 +186,18 @@ class App extends Component {
                 <div className="select-cards-container">
                     <div className="row select-cards-title-wrapper">
                         <img className="logo-image" src={autopass_image} />
-                        <div className="chinese-font select-cards-title">麻吉福利社</div>
+                        <div className="chinese-font select-cards-title">{`麻吉福利社`}</div>
                     </div>
                     <div className="row">
                         <div className="seletion-subtitle-wrapper chinese-font" >
                             {`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
                         </div>
                     </div>
-                    <div className="row bank-select-card-list-contaniner">
+                    {/* <div className="row bank-select-card-list-contaniner">
                         {this.state.bank_list.map((bankName, index) => (
                             // <div className="bank-select-card-container">
-                            <div className="bank-select-card" key={`bank-select-card-${index}`} onClick={(e) => this.handleSelectBank(e, bankName, index)}>
-                                <div className="bank-select-info">
+                            <div className="bank-select-card" key={`bank-select-card-${index}`} >
+                                <div className="bank-select-info" onClick={(e) => this.handleSelectBank(e, bankName, index)}>
                                     <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
                                     <div classes="bank-select-bankInfo chinese-font">
                                         <div className="bank-select-bankName chinese-font">{bankName}</div>
@@ -230,7 +217,13 @@ class App extends Component {
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </div> */}
+                    <SelectList
+                        bank_list={this.state.bank_list}
+                        select_card_list_width={this.state.select_card_list_width}
+                        select_card_height={this.state.select_card_height}
+                        select_card_width={this.state.select_card_width}
+                    />
                     <div className="row select-cards-save-wrapper">
                         <div className="row select-cards-save-shadow" />
                         <div className="row select-cards-save-button-wrapper">
