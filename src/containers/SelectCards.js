@@ -86,8 +86,8 @@ class App extends Component {
                 });
             }
             console.log(profile);
-        }).then(()=>{
-        this.setState({ loading: false });
+        }).then(() => {
+            this.setState({ loading: false });
         });
 
         window.addEventListener('resize', this.handleResizeWindow);
@@ -152,6 +152,10 @@ class App extends Component {
         //         }
         //     });
         // }
+
+        if (this.state.OS !== 'web') {
+                liff.closeWindow();
+        }
     }
 
 
