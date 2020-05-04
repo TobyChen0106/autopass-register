@@ -59,7 +59,7 @@
     flex-direction: row;
     flex-wrap: nowrap;
     width: 100%;
-    min-height: 5rem;
+    height: 5rem;
     /* margin-left: 5vw;
     margin-right: 5vw; */
     text-align: center;
@@ -97,8 +97,13 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    /* z-index: -1; */
-    transition: 1s;
+    overflow: hidden;
+    /* transition: 0.5s; */
+    -webkit-transition: height 0.4s ease-out;
+    -moz-transition: height 0.4s ease-out;
+    -ms-transition: height 0.4s ease-out;
+    -o-transition: height 0.4s ease-out;
+    transition: height 0.4s ease-out;
 }
 
 .card-image-card-holder {
@@ -162,7 +167,6 @@
     background-color: #04BF8A;
     opacity: 0.7;
     color: #ffffff;
-    
     vertical-align: middle;
     display: flex;
     flex-direction: row;
@@ -181,7 +185,7 @@
     font-size: 200%;
 }
 
-.tick-bank-and-card-name{
+.tick-bank-and-card-name {
     float: left;
     position: absolute;
     bottom: 10%;
@@ -190,6 +194,7 @@
     height: 20%;
     font-size: 110%;
 }
+
 .blue {
     color: #58a8d7;
 }
