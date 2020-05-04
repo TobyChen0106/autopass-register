@@ -116,11 +116,11 @@
 }
 
 .card-image-card {
-    border-style: solid;
+    /* border-style: solid;
     border-radius: 0.5rem;
     border-color: #443416;
     border-width: 0.1rem;
-    background-color: #ffffff;
+    background-color: #ffffff; */
     color: #443416;
     margin: 5%;
     height: 80%;

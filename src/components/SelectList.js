@@ -40,8 +40,8 @@ class SelectList extends Component {
         const Row = (bankName, index, style) => (
             <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
                 <div className="card-image-card">
-                    <img className="card-image" />
-                    {`${bankName}-card-${index}`}
+                    <img className="card-image" src={card_01}/>
+                    {/* {`${bankName}-card-${index}`} */}
                 </div>
             </div >
         );
