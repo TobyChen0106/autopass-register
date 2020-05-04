@@ -1,9 +1,9 @@
-
 import React, { Component } from 'react';
 import './SelectCards.css'
 //images
-
 import autopass_image from '../images/autopass-logo.png'
+import tick_image from '../images/tick.png'
+
 // material-UI
 // import PropTypes from 'prop-types';
 // import { makeStyles } from '@material-ui/core/styles';
@@ -26,11 +26,11 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            profile: undefined,
-            // profile: {
-            //     displayName: "Toby",
-            //     userId: "1234"
-            // },
+            // profile: undefined,
+            profile: {
+                displayName: "Toby",
+                userId: "1234"
+            },
             OS: undefined,
 
             userCards: [],
@@ -66,28 +66,29 @@ class App extends Component {
                 '王道銀行', '台灣樂天', '凱基銀行', '玉山銀行', '臺灣銀行', '台中商銀', '土地銀行', '安泰銀行', '三信銀行', '高雄銀行', '華泰銀行',
                 '美國運通']
         });
-        liff.init({ liffId: '1653657893-0l6vwVAx' }).then(() => {
-            if (!liff.isLoggedIn()) {
-                liff.login({ redirectUri: "https://autopass-cards.herokuapp.com/" });
-            }
-        }).then(
-            () => liff.getOS()
-        ).then(
-            (OS) => { this.setState({ OS: OS }) }
-        ).then(
-            () => liff.getProfile()
-        ).then((profile) => {
-            if (!profile.userId) {
-                window.alert("USER ID ERROR!");
-            } else {
-                this.setState({
-                    profile: profile
-                });
-            }
-            console.log(profile);
-        }).then(()=>{
+        // liff.init({ liffId: '1653657893-0l6vwVAx' }).then(() => {
+        //     if (!liff.isLoggedIn()) {
+        //         liff.login({ redirectUri: "https://autopass-cards.herokuapp.com/" });
+        //     }
+        // }).then(
+        //     () => liff.getOS()
+        // ).then(
+        //     (OS) => { this.setState({ OS: OS }) }
+        // ).then(
+        //     () => liff.getProfile()
+        // ).then((profile) => {
+        //     if (!profile.userId) {
+        //         window.alert("USER ID ERROR!");
+        //     } else {
+        //         this.setState({
+        //             profile: profile
+        //         });
+        //     }
+        //     console.log(profile);
+        // }).then(()=>{
             this.setState({ loading: false });
-        });
+        // });
+        
         window.addEventListener('resize', this.handleResizeWindow);
     }
     handleResizeWindow = () => {
@@ -95,18 +96,17 @@ class App extends Component {
         if (window.innerWidth * 0.33 < 198) {
             this.setState({ select_card_height: window.innerWidth * 0.33 });
         } else {
-            this.setState({ select_card_height: 200 });
+            this.setState({ select_card_height: 198 });
         }
         if (window.innerWidth * 0.6 < 306) {
             this.setState({ select_card_width: window.innerWidth * 0.51 });
         } else {
-            this.setState({ select_card_width: 300 });
+            this.setState({ select_card_width: 306 });
         }
         if (window.innerWidth * 0.9 < window.innerHeight * 0.8) {
             this.setState({ select_card_list_width: window.innerWidth * 0.9 });
         } else {
             this.setState({ select_card_list_width: window.innerHeight * 0.8 });
-
         }
         // console.log( window.innerWidth, window.innerHeight);
     }
@@ -162,21 +162,6 @@ class App extends Component {
     }
 
     render() {
-
-        // const classes = useStyles();
-        const Row = (bankName, index, style) => (
-            <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
-                <div className="card-image-card">
-                    <img className="card-image" />
-                    {`${bankName}-card-${index}`}
-                </div>
-            </div >
-        );
-
-        const divStyle = (index) => (
-            { display: this.state.enable_select_index == index ? 'flex' : 'none' }
-        );
-
         if (this.state.loading) {
             // if (true) {
             return (
@@ -197,6 +182,7 @@ class App extends Component {
                         select_card_list_width={this.state.select_card_list_width}
                         select_card_height={this.state.select_card_height}
                         select_card_width={this.state.select_card_width}
+                        tick = {tick_image}
                     />
                     <SaveFooter
                         formOnSubmit={this.formOnSubmit}
