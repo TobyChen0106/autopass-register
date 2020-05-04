@@ -1,23 +1,23 @@
-
 import React, { Component } from 'react';
 import './SelectCards.css'
 //images
-import e_sun_image from '../images/banks/e.sun-bank.jpg'
-import card_01 from '../images/cards/card-01.jpg'
-
 import autopass_image from '../images/autopass-logo.png'
+import tick_image from '../images/tick.png'
+
 // material-UI
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import { FixedSizeList } from 'react-window';
+// import PropTypes from 'prop-types';
+// import { makeStyles } from '@material-ui/core/styles';
+// import ListItem from '@material-ui/core/ListItem';
+// import List from '@material-ui/core/List';
+// import ListItemText from '@material-ui/core/ListItemText';
+// import { FixedSizeList } from 'react-window';
 //loading
 import ReactLoading from 'react-loading';
 
 // components
 import SelectList from '../components/SelectList'
+import AppTitle from '../components/AppTitle'
+import SaveFooter from '../components/SaveFooter'
 
 // Liff
 const liff = window.liff;
@@ -29,7 +29,7 @@ class App extends Component {
             // profile: undefined,
             profile: {
                 displayName: "Toby",
-                lineID: "1234"
+                userId: "1234"
             },
             OS: undefined,
 
@@ -87,8 +87,11 @@ class App extends Component {
         //             profile: profile
         //         });
         //     }
+        //     console.log(profile);
+        // }).then(()=>{
+            this.setState({ loading: false });
         // });
-        this.setState({ loading: false });
+        
         window.addEventListener('resize', this.handleResizeWindow);
     }
     handleResizeWindow = () => {
@@ -96,18 +99,17 @@ class App extends Component {
         if (window.innerWidth * 0.33 < 198) {
             this.setState({ select_card_height: window.innerWidth * 0.33 });
         } else {
-            this.setState({ select_card_height: 200 });
+            this.setState({ select_card_height: 198 });
         }
         if (window.innerWidth * 0.6 < 306) {
             this.setState({ select_card_width: window.innerWidth * 0.51 });
         } else {
-            this.setState({ select_card_width: 300 });
+            this.setState({ select_card_width: 306 });
         }
         if (window.innerWidth * 0.9 < window.innerHeight * 0.8) {
             this.setState({ select_card_list_width: window.innerWidth * 0.9 });
         } else {
             this.setState({ select_card_list_width: window.innerHeight * 0.8 });
-
         }
         // console.log( window.innerWidth, window.innerHeight);
     }
@@ -163,76 +165,32 @@ class App extends Component {
     }
 
     render() {
-
-        // const classes = useStyles();
-        const Row = (bankName, index, style) => (
-            <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
-                <div className="card-image-card">
-                    <img className="card-image" />
-                    {`${bankName}-card-${index}`}
-                </div>
-            </div >
-        );
-
-        const divStyle = (index) => (
-            { display: this.state.enable_select_index == index ? 'flex' : 'none' }
-        );
-
         if (this.state.loading) {
             // if (true) {
-            return (<div className="my-loading">
-                <ReactLoading type={'balls'} color={'#ffffff'} height={'20vh'} width={'20vw'} />
-            </div>)
+            return (
+                <div className="my-loading">
+                    <ReactLoading type={'balls'} color={'#ffffff'} height={'20vh'} width={'20vw'} />
+                </div>)
         }
         else {
             return (
                 <div className="select-cards-container">
-                    <div className="row select-cards-title-wrapper">
-                        <img className="logo-image" src={autopass_image} />
-                        <div className="chinese-font select-cards-title">{`麻吉福利社`}</div>
-                    </div>
-                    <div className="row">
-                        <div className="seletion-subtitle-wrapper chinese-font" >
-                            {`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
-                        </div>
-                    </div>
-                    {/* <div className="row bank-select-card-list-contaniner">
-                        {this.state.bank_list.map((bankName, index) => (
-                            // <div className="bank-select-card-container">
-                            <div className="bank-select-card" key={`bank-select-card-${index}`} >
-                                <div className="bank-select-info" onClick={(e) => this.handleSelectBank(e, bankName, index)}>
-                                    <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
-                                    <div classes="bank-select-bankInfo chinese-font">
-                                        <div className="bank-select-bankName chinese-font">{bankName}</div>
-                                        <div className="bank-select-info-title chinese-font">{`title`}</div>
-                                        <div className="bank-select-info-subtitle chinese-font">{`subtitle`}</div>
-                                    </div>
-                                </div>
-                                <div className="card-selet-container" style={divStyle(index)}>
-                                    <FixedSizeList
-                                        height={this.state.select_card_height}
-                                        itemCount={33}
-                                        itemSize={this.state.select_card_width}
-                                        layout="horizontal"
-                                        width={this.state.select_card_list_width}>
-                                        {({ index, style }) => Row(bankName, index, style)}
-                                    </FixedSizeList>
-                                </div>
-                            </div>
-                        ))}
-                    </div> */}
+                    <AppTitle
+                        logo={autopass_image}
+                        title={`麻吉福利社`}
+                        subtitle={`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
+                    />
                     <SelectList
                         bank_list={this.state.bank_list}
                         select_card_list_width={this.state.select_card_list_width}
                         select_card_height={this.state.select_card_height}
                         select_card_width={this.state.select_card_width}
+                        tick = {tick_image}
                     />
-                    <div className="row select-cards-save-wrapper">
-                        <div className="row select-cards-save-shadow" />
-                        <div className="row select-cards-save-button-wrapper">
-                            <button className="select-cards-save-button chinese-font" onClick={this.formOnSubmit}>{`儲存`}</button>
-                        </div>
-                    </div>
+                    <SaveFooter
+                        formOnSubmit={this.formOnSubmit}
+                        saveButtonName={`儲存`}
+                    />
                 </div>
             );
         }

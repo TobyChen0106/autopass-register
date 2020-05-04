@@ -21,6 +21,7 @@ class SelectList extends Component {
                 options: []
             }],
             enable_select_index: -1,
+            enable_card_select_index: -1,
             bank_list: this.props.bank_list
         };
     }
@@ -39,17 +40,32 @@ class SelectList extends Component {
         // const classes = useStyles();
         const Row = (bankName, index, style) => (
             <div style={style} className="card-image-card-holder" onClick={(e) => this.handleSelectCard(e, bankName, index)}>
-                <div className="card-image-card">
-                    <img className="card-image" />
-                    {`${bankName}-card-${index}`}
+                <div className="card-image-card" >
+                    <img className="card-image card-selected" src={card_01} style={selectCardImageStyle(index)}/>
+                    <div className="selected-tick chinese-font" style={selectCardTickStyle(index)}>
+                        <img className="tick-image" src={this.props.tick} />
+                        <div className="chinese-font tick-text">{`已選擇`}</div>
+                    </div>
+                    <div className="chinese-font tick-bank-and-card-name" style={selectCardNameStyle(index)}>{`${bankName}-card-${index}`}</div>
                 </div>
             </div >
         );
 
-        const divStyle = (index) => (
+        const selectBankStyle = (index) => (
             { display: this.state.enable_select_index == index ? 'flex' : 'none' }
         );
 
+        const selectCardImageStyle = (index) => (
+            { opacity: this.state.enable_select_index == index ? '0.25' : '1' }
+        );
+        
+        const selectCardTickStyle = (index) => (
+            { display: this.state.enable_select_index == index ? 'flex' : 'none' }
+        );
+
+        const selectCardNameStyle = (index) => (
+            { display: this.state.enable_select_index == index ? 'block' : 'none' }
+        );
         return (
             <div className="row bank-select-card-list-contaniner">
                 {this.state.bank_list.map((bankName, index) => (
@@ -63,7 +79,7 @@ class SelectList extends Component {
                                 <div className="bank-select-info-subtitle chinese-font">{`subtitle`}</div>
                             </div>
                         </div>
-                        <div className="card-selet-container" style={divStyle(index)}>
+                        <div className="card-selet-container" style={selectBankStyle(index)}>
                             <FixedSizeList
                                 height={this.props.select_card_height}
                                 itemCount={33}
