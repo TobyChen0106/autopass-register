@@ -29,7 +29,7 @@ class App extends Component {
             // profile: undefined,
             profile: {
                 displayName: "Toby",
-                lineID: "1234"
+                userId: "1234"
             },
             OS: undefined,
 
@@ -66,26 +66,28 @@ class App extends Component {
                 '王道銀行', '台灣樂天', '凱基銀行', '玉山銀行', '臺灣銀行', '台中商銀', '土地銀行', '安泰銀行', '三信銀行', '高雄銀行', '華泰銀行',
                 '美國運通']
         });
-        // liff.init({ liffId: '1653657893-0l6vwVAx' }).then(() => {
-        //     if (!liff.isLoggedIn()) {
-        //         liff.login({ redirectUri: "https://autopass-cards.herokuapp.com/" });
-        //     }
-        // }).then(
-        //     () => liff.getOS()
-        // ).then(
-        //     (OS) => { this.setState({ OS: OS }) }
-        // ).then(
-        //     () => liff.getProfile()
-        // ).then((profile) => {
-        //     if (!profile.userId) {
-        //         window.alert("USER ID ERROR!");
-        //     } else {
-        //         this.setState({
-        //             profile: profile
-        //         });
-        //     }
-        // });
-        this.setState({ loading: false });
+        liff.init({ liffId: '1653657893-0l6vwVAx' }).then(() => {
+            if (!liff.isLoggedIn()) {
+                liff.login({ redirectUri: "https://autopass-cards.herokuapp.com/" });
+            }
+        }).then(
+            () => liff.getOS()
+        ).then(
+            (OS) => { this.setState({ OS: OS }) }
+        ).then(
+            () => liff.getProfile()
+        ).then((profile) => {
+            if (!profile.userId) {
+                window.alert("USER ID ERROR!");
+            } else {
+                this.setState({
+                    profile: profile
+                });
+            }
+            console.log(profile);
+        }).then(()=>{
+            this.setState({ loading: false });
+        });
         window.addEventListener('resize', this.handleResizeWindow);
     }
     handleResizeWindow = () => {
@@ -188,7 +190,7 @@ class App extends Component {
                     <AppTitle
                         logo={autopass_image}
                         title={`麻吉福利社`}
-                        subtitle={`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
+                        subtitle={`${this.state.profile.userId}，您可以在這裡選擇您擁有的卡片:`}
                     />
                     <SelectList
                         bank_list={this.state.bank_list}

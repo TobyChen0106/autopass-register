@@ -4,9 +4,6 @@ import './AppTitle.css'
 class AppTitle extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            
-        };
     }
 
     render() {
