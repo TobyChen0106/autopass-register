@@ -77,10 +77,13 @@
     max-height: 100%;
 }
 
-.bank-select-bankinfo {}
+.bank-select-bank-info {
+    margin: 0.5rem;
+    max-height: 4rem;
+}
 
 .bank-select-bankName {
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .bank-select-info-title {
@@ -88,7 +91,7 @@
 }
 
 .bank-select-info-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
 
 .card-selet-container {

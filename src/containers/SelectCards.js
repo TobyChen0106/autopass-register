@@ -89,6 +89,7 @@ class App extends Component {
         }).then(() => {
             this.setState({ loading: false });
         });
+        // this.setState({ loading: false });
 
         window.addEventListener('resize', this.handleResizeWindow);
     }
@@ -154,7 +155,7 @@ class App extends Component {
         // }
 
         if (this.state.OS !== 'web') {
-                liff.closeWindow();
+            liff.closeWindow();
         }
     }
 

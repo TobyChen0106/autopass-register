@@ -88,7 +88,7 @@ class SelectList extends Component {
                     <div className="bank-select-card" key={`bank-select-card-${index}`} >
                         <div className="bank-select-info" onClick={(e) => this.handleSelectBank(e, bank.bankName, index)} style={selectBankHeightStyle(index)}>
                             <div className="bank-select-image"><img className="bank-select-image-src" src={e_sun_image} /></div>
-                            <div classes="bank-select-bankInfo chinese-font">
+                            <div className="bank-select-bank-info chinese-font">
                                 <div className="bank-select-bankName chinese-font">{bank.bankName}</div>
                                 <div className="bank-select-info-title chinese-font">{bank.bankTitle}</div>
                                 <div className="bank-select-info-subtitle chinese-font">{bank.bankSubtitle}</div>
