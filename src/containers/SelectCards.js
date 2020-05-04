@@ -26,11 +26,11 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // profile: undefined,
-            profile: {
-                displayName: "Toby",
-                userId: "1234"
-            },
+            profile: undefined,
+            // profile: {
+            //     displayName: "Toby",
+            //     userId: "1234"
+            // },
             OS: undefined,
 
             userCards: [],
@@ -190,7 +190,7 @@ class App extends Component {
                     <AppTitle
                         logo={autopass_image}
                         title={`麻吉福利社`}
-                        subtitle={`${this.state.profile.userId}，您可以在這裡選擇您擁有的卡片:`}
+                        subtitle={`${this.state.profile.displayName}，您可以在這裡選擇您擁有的卡片:`}
                     />
                     <SelectList
                         bank_list={this.state.bank_list}
