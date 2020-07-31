@@ -20,7 +20,7 @@
 }
 
 .select-cards-title-wrapper {
-    height: 5rem;
+    height: 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -33,7 +33,7 @@
 }
 
 .select-cards-title {
-    font-size: 2rem;
+    font-size: 1.2rem;
     height: 5rem;
     width: 10rem;
     line-height: 5rem;

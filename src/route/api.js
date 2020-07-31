@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/User');
 const Card = require('../models/Card');
+const Bank = require('../models/Bank');
+const Pay = require('../models/Pay');
 
-router.post('/users', (req, res) => {
+
+
+router.post('/getUserProfile', (req, res) => {
     const userdata = req.body;
     if (userdata.lineID === "") {
         res.json("[ERROR] lineID empty!");
@@ -13,67 +17,100 @@ router.post('/users', (req, res) => {
                 console.log(err);
                 res.json("Server User find ID Error." + String(err));
             }
-            else if (!userResponse) {
-                const newUser = new User(userdata);
-                newUser.save().then((user) => {
-                    res.json("New user created!");
+            if (!userResponse) {
+                const newUser = new User({
+                    lineID: userdata.lineID,
+                    displayName: userdata.displayName,
+                    userImage: userdata.userImage,
                 })
-            } else {
-                // console.log(userResponse)
-                userResponse.lineID = userdata.lineID;
-                userResponse.displayName = userdata.displayName;
-                userResponse.nickName = userdata.nickName;
-                userResponse.age = userdata.age;
-                userResponse.gender = userdata.gender;
-                userResponse.cards = userdata.cards;
-                userResponse.stores = userdata.stores;
-                
-                userResponse.save().then((user) => {
-                    res.json("User Data modified!");
-                })
+                newUser.save().then(
+                    function (updatedDoc, err) {
+                        // if update is successful, this function will execute
+                        if (err) {
+                            console.log(err);
+                            res.json(null);
+                        } else {
+                            res.json(updatedDoc);
+                        }
+                    }
+                );
+            }
+            else {
+                res.json(userResponse)
             }
         })
     }
 });
 
-router.get('/users', (req, res) => {
-    console.log('router get');
-    res.json();
-});
-
-router.post('/check-users', (req, res) => {
-    const userID = req.body.userID;
-    if (userID === "") {
-        res.json("[ERROR] lineID ERROR!");
-    } else {
-        User.findOne({ lineID: userID }, (err, userResponse) => {
-            if (err) {
-                console.log(err);
-                res.json("Server User find ID Error." + String(err));
-            }
-            // else if (!userResponse) {
-            //     res.json({ IDregistered: false });
-            // } else {
-            //     res.json({ IDregistered: true });
-            // }
-            else{
-                res.json(userResponse);
-            }
-        })
-    }
-});
-
-router.get('/cards', (req, res) => {
+router.get('/getCards', (req, res) => {
     Card.find({}, (err, data) => {
         if (err) {
             console.log(err);
+            res.json("Server User find ID Error." + String(err));
         }
-        else if (!data) {
-            console.log("[ERROR] EMPTY DATA!");
-        } else {
+        else {
             res.json(data);
         }
     })
+});
+
+router.get('/getBanks', (req, res) => {
+    Bank.find({}, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.json("Server User find ID Error." + String(err));
+        }
+        else {
+            res.json(data);
+        }
+    })
+});
+
+router.get('/getPays', (req, res) => {
+    Pay.find({}, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.json("Server User find ID Error." + String(err));
+        }
+        else {
+            res.json(data);
+        }
+    })
+});
+
+router.get('/getPays', (req, res) => {
+    Card.find({}, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.json("Server User find ID Error." + String(err));
+        }
+        else {
+            res.json(data);
+        }
+    })
+});
+
+router.post('/updateUser', (req, res) => {
+    const userdata = req.body;
+    if (userdata.lineID === "") {
+        res.json("[ERROR] lineID empty!");
+    } else {
+        User.findOneAndUpdate({ lineID: userdata.lineID }, userdata,
+            { new: true, upsert: true, useFindAndModify: false },
+            (err, userResponse) => {
+                if (err) {
+                    console.log(err);
+                    res.json("Server User find ID Error." + String(err));
+                }
+                if (!userResponse) {
+                    console.log("error empty user findOneAndUpdate!")
+                    res.json(userResponse)
+                }
+                else {
+                    res.json(userResponse)
+                }
+            })
+    }
 });
 
 module.exports = router;

@@ -13,14 +13,12 @@ const apiRoute = require('./src/route/api');
 // })
 // mongodb
 const mongoose = require('mongoose');
-const dbName = "autopass-db"
-const usrName = "Toby0106"
-const usrPswd = "dbforcardbo"
-
-// mongoURL = `mongodb+srv://${usrName}:${usrPswd}@cardbo-br3ga.gcp.mongodb.net/${dbName}?retryWrites=true&w=majority`
-mongoURL = `mongodb+srv://${usrName}:${usrPswd}@cluster0-gfwld.mongodb.net/${dbName}?retryWrites=true&w=majority`
+const dbName = "dbCardbo-v2"
+const usrName = "cardbo"
+const usrPswd = "69541"
+mongoURL = `mongodb+srv://${usrName}:${usrPswd}@cardbo-br3ga.gcp.mongodb.net/${dbName}?retryWrites=true&w=majority`
 mongoose.connect(mongoURL, {useNewUrlParser: true});
-
+mongoose.set('useFindAndModify', false);
 db = mongoose.connection;
 db.on('error', e => {
 	console.log(e);
