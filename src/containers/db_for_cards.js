@@ -12,22 +12,23 @@ const bank_list = ['台新銀行', '渣打銀行', '彰化銀行', '花旗銀行
 export const banks = bank_list.map((i, index) => (
     {
         _id: `bank${index}`,
-        bankName: bank_list[index],
-        bankImage: '/images/pays/autopass-logo.png',
-        bankCode: `${index}`,
-        cards: card_list,
+        BankName: bank_list[index],
+        BankImage: '/images/banks/e.sun-bank.jpg',
+        BankCode: `${index}`,
+        BankCards: card_list,
     }
 ));
 
 export const cards = banks.map((bank, indexb) => (
     card_id_list.map((card, index) => (
         {
-            cardName: `${bank.bankName}-card-${card}`,
             _id: `card${indexb * 20 + index}`,
-            bankName: bank.bankName,
-            bankID: bank._id,
-            cardImage: '/images/cards/card-01.jpg',
-            offers: []
+            CardName: `${bank.BankName}-card-${card}`,
+            ServiceAgent: "VISA",
+            CardGrade: "",
+            CardImage: '/images/cards/card-01.jpg',
+            BankID: bank._id,
+            Offers: []
         }
     ))
 )).flat();

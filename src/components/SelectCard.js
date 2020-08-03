@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef, createRef } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Link, Redirect } from "react-router-dom";
 import List from '@material-ui/core/List';
@@ -8,9 +8,21 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import DoneIcon from '@material-ui/icons/Done';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import ReactLoading from 'react-loading';
+import Skeleton from '@material-ui/lab/Skeleton';
+//images
+import autopass_logo from '../images/logo.png';
+
+// gliderjs
+import 'glider-js/glider.min.css';
+import Glider from 'react-glider';
 
 const responsive = {
     superLargeDesktop: {
@@ -34,28 +46,28 @@ const responsive = {
 
 const useStyles = (theme) => ({
     root: {
-        // marginTop: '0',
+        width: "95vw",
+        paddingLeft: "5vw"
     },
-    avatarHolder: {
-        paddingTop: "1rem",
-        paddingBottom: "3rem",
+    userCardHeader: {
+        width: "90vw",
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
-        background: "rgb(37,151,226)",
-        background: "linear-gradient(0deg, rgba(37,151,226,1) 0%, rgba(53,152,218,1) 10%, rgba(9,122,197,1) 49%, rgba(9,122,197,1) 100%)",
+        height: "15vw",
     },
-    avatar: {
-        width: theme.spacing(8),
-        height: theme.spacing(8),
-        marginRight: theme.spacing(2),
-        borderRadius: "10%"
+    bankImage: {
+        marginLeft: "5vw",
+        width: "12vw",
     },
-    displayName: {
-        color: "#fff",
-        fontSize: "1.2rem",
-        marginTop: "0.5rem"
+    bankName: {
+        width: "66vw",
+        paddingLeft: "3vw",
+        fontSize: "5vw",
+        userSelect: "none"
+    },
+    expandMore: {
+        width: "12vw",
     },
     doneIcone: {
         width: "20px",
@@ -64,7 +76,13 @@ const useStyles = (theme) => ({
         color: "white",
         borderRadius: "50%",
     },
-    cardCarousel: {
+    glider: {
+        height: "35vw",
+    },
+    skeletonCard: {
+        borderRadius: "5vw",
+    },
+    carouselHolder: {
         overflow: "hidden",
         transition: "height 0.3s ease-in-out",
     },
@@ -74,7 +92,7 @@ const useStyles = (theme) => ({
         display: "flex col",
         alignItems: "center"
     },
-    cardHolder: {
+    cardImageHolder: {
         width: "100%",
         height: 'auto',
         // maxWidth: "100%",
@@ -83,8 +101,6 @@ const useStyles = (theme) => ({
     cardImage: {
         width: "100%",
         borderRadius: "2.5vw",
-        // maxWidth: "100%",
-        // boxShadow: "0 0 5px 5px #2fc4b2",
     },
     cardName: {
         marginTop: "0.6rem",
@@ -108,6 +124,31 @@ const useStyles = (theme) => ({
         display: "flex",
         justifyContent: "center"
     },
+    loading: {
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#fcf700",
+    },
+    loadingIconHolder: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        display: "flex",
+        alignItems: "center"
+    },
+    loadingIcon: {
+        width: "30vw",
+        height: "30vw",
+    },
+    loadingIconImage: {
+        maxWidth: "100%",
+    },
+    loadingBubbles: {
+        width: "40vw",
+        height: "40vw",
+        transform: "scaleX(-1)",
+    }
 });
 
 class SelectCard extends Component {
@@ -115,7 +156,9 @@ class SelectCard extends Component {
         super(props);
         this.state = {
             showBankdCarouselIndex: null,
+            loading: true,
         }
+        this.gliderRef = createRef();
     }
     componentDidMount = () => {
         window.scrollTo(0, 0);
@@ -123,7 +166,6 @@ class SelectCard extends Component {
 
     handleSelectBank = (e, bankID) => {
         e.preventDefault();
-
         if (bankID === this.state.showBankdCarouselIndex) {
             this.setState({ showBankdCarouselIndex: null })
         } else {
@@ -139,43 +181,79 @@ class SelectCard extends Component {
     handleCloseModal = () => {
         this.setState({ showSelectedCardIndex: null })
     }
+    componentDidMount = () => {
+        setInterval(() => this.setState({ loading: false }), 1000);
+    }
 
     render() {
-        // const alert = this.props.alert;
         const { classes } = this.props;
-        const list = this.props.bank_list.filter(b => b.BankCards.length !== 0 && b.BankName !== "電子票證").map((i, index) => {
-            const cardCarouselStyle = i._id === this.state.showBankdCarouselIndex ? { height: "40vw" } : { height: "0" };
+        const list = this.props.bankList.filter(b => b.BankCards.length !== 0 && b.BankName !== "電子票證").map((bank, index) => {
+            const cardCarouselStyle = bank._id === this.state.showBankdCarouselIndex ? { height: "35vw" } : { height: "0" };
 
-            const carouselCards = this.props.card_list.filter(c => c.BankID === i._id);
+            const carouselCards = (bank._id === this.state.showBankdCarouselIndex) ? (this.props.cardList.filter(c => c.BankID === bank._id).map(
+                card => (<div>{card.CardName}</div>)
+            )) :
+                (
+                    <>
+                        <div>
+                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
+                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
+                        </div>
+                        <div>
+                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
+                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
+                        </div>
+                        <div>
+                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
+                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
+                        </div>
+                    </>
+                )
+
+            const carousel = (<Glider ref={this.gliderRef}
+                className={classes.glider}
+                slidesToShow={2.5}
+                slidesToScroll={10}>
+                {carouselCards}
+            </Glider>);
+
             return (
-                <div id={`bank-div-${i._id}`}>
-                    <ListItem onClick={(e) => this.handleSelectBank(e, i._id)}>
-                        <ListItemIcon>
-                            <Badge
-                                classes={{ badge: classes.doneIcone }}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'right',
-                                }}
-                                color="secondary"
-                                badgeContent={null}>
-                                <Avatar className={classes.avatar} alt="Card" src={i.BankImage} />
-                            </Badge>
-                        </ListItemIcon>
-                        <ListItemText id={`setting-cards`}
-                            primary={i.BankName}
-                            secondary={`(${i.BankCode})`} />
-                    </ListItem>
+                <>
+                    <div className={classes.userCardHeader} id={`bank-div-${bank._id}`} onClick={(e) => this.handleSelectBank(e, bank._id)}>
+                        <Avatar variant="rounded" className={classes.bankImage} src={bank.BankImage}>{classes.bankName}</Avatar>
+                        <div className={classes.bankName}>
+                            {bank.BankName}
+                        </div>
+                        <IconButton className={classes.expandMore} onClick={(e) => this.handleSelectBank(e, bank._id)}>
+                            <ExpandMoreIcon />
+                        </IconButton>
+                    </div>
+                    <div className={classes.carouselHolder} style={cardCarouselStyle}>
+                        {carousel}
+                    </div>
                     <Divider />
-                </div>
+                </>
             )
         })
-
-        return (
-            <div className={classes.root}>
-                cards
-            </div>
-        )
+        if (this.state.loading) {
+            return (
+                <div className={classes.loading}>
+                    <div className={classes.loadingIconHolder}>
+                        <div className={classes.loadingBubbles}>
+                            <ReactLoading type={'bubbles'} color={'#fff'} height={'30vh'} width={'40vw'} />
+                        </div>
+                        <div className={classes.loadingIcon}>
+                            <img className={classes.loadingIconImage} src={autopass_logo} />
+                        </div>
+                    </div>
+                </div>)
+        } else {
+            return (
+                <div className={classes.root}>
+                    {list}
+                </div>
+            )
+        }
     }
 }
 export default withStyles(useStyles)(SelectCard)

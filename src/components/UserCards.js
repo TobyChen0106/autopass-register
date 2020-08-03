@@ -40,7 +40,6 @@ import UserInfoCard from './UserInfoCard'
 import UserCardEmpty from './UserCardEmpty'
 import UserCardList from './UserCardList'
 
-import {cards} from '../containers/db_for_cards.js';
 const useStyles = (theme) => ({
     root: {
         width: "100%",
@@ -52,9 +51,9 @@ class UserCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userName: "Jung",
+            userName: "Toby",
             userCards: [
-                "card1", "card2", "card3"
+                // "card1", "card2", "card3"
             ]
         }
     }
@@ -76,15 +75,24 @@ class UserCard extends Component {
     }
     render() {
         const { classes } = this.props;
+        const usercard = this.state.userCards.length === 0 ?
+            (<UserCardEmpty
+                userCards={this.props.ownCards}
+                cardList={this.props.cardList}
+                bankList={this.props.bankList}
+            />) :
+            (<UserCardList
+                userCards={this.props.ownCards}
+                cardList={this.props.cardList}
+                bankList={this.props.bankList}
+            />);
         return (
-            <div className={classes.root}>
+            <div className={classes.root} >
                 <UserInfoCard
-                    userName={this.state.userName}
-                    numCards={this.state.userCards.length}
+                    userName={this.props.userName}
+                    numCards={this.props.ownCards.length}
                 />
-                <UserCardList
-                    userCards={this.state.userCards}
-                    cardList={cards} />
+                {usercard}
             </div>
         )
     }

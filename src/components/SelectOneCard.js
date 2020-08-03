@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Link, Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -9,9 +9,20 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+
 import DoneIcon from '@material-ui/icons/Done';
+import CancelIcon from '@material-ui/icons/Cancel';
 import Badge from '@material-ui/core/Badge';
 import Carousel from "react-multi-carousel";
+
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
+
 import "react-multi-carousel/lib/styles.css";
 
 const responsive = {
@@ -110,22 +121,43 @@ const useStyles = (theme) => ({
         display: "flex",
         justifyContent: "center"
     },
+    modalTextFieldHolder: {
+        width: "90vw",
+        maxHeight: "90vh",
+        backgroundColor: "#fff",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        overflow: "scroll",
+    },
+    CardContent: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: "2rem",
+        marginBottom: "2rem",
+    },
 });
 
-class SelectCard extends Component {
+class SelectOneCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showBankdCarouselIndex: null,
+            ownCard: null,
+            modalOpen: false,
         }
     }
+
     componentDidMount = () => {
         window.scrollTo(0, 0);
     }
 
     handleSelectBank = (e, bankID) => {
         e.preventDefault();
-
         if (bankID === this.state.showBankdCarouselIndex) {
             this.setState({ showBankdCarouselIndex: null })
         } else {
@@ -133,20 +165,24 @@ class SelectCard extends Component {
         }
     }
 
-    handleSelectCard = (e, cardID, cardName) => {
+    handleSelectCard = (e, cardID) => {
         e.preventDefault();
-        this.props.updateUserCards(cardID, cardName);
+        this.setState({ modalOpen: true, ownCard: cardID })
     }
 
     handleCloseModal = () => {
-        this.setState({ showSelectedCardIndex: null })
+        this.setState({ modalOpen: false, ownCard: null })
+    }
+
+    handleConfirm = () => {
+        this.props.updateUserOneCard(this.state.ownCard);
     }
 
     render() {
-        // const alert = this.props.alert;
         const { classes } = this.props;
         const list = this.props.bank_list.filter(b => b.BankCards.length !== 0 && b.BankName !== "電子票證").map((i, index) => {
             const cardCarouselStyle = i._id === this.state.showBankdCarouselIndex ? { height: "40vw" } : { height: "0" };
+
             const carouselCards = this.props.card_list.filter(c => c.BankID === i._id);
             return (
                 <div id={`bank-div-${i._id}`}>
@@ -205,9 +241,9 @@ class SelectCard extends Component {
                             focusOnSelect={false}
                         >
                             {carouselCards.map((c, index) => {
-                                const selected = this.props.ownCards.findIndex(cs => cs === c._id) !== -1;
+                                const selected = this.state.ownCard === c._id;
                                 return (
-                                    <div id={`card-div-${c.CardName}`} className={classes.card} onClick={(e) => this.handleSelectCard(e, c._id, c.CardName)}>
+                                    <div id={`card-div-${c.CardName}`} className={classes.card} onClick={(e) => this.handleSelectCard(e, c._id)}>
                                         <Badge
                                             classes={{ badge: classes.doneIcone }}
                                             anchorOrigin={{
@@ -233,16 +269,38 @@ class SelectCard extends Component {
                 </div>
             )
         })
-
+        const modal = (
+            <Card className={classes.modalTextFieldHolder}>
+                <CardHeader
+                    action={
+                        <IconButton aria-label="settings" onClick={this.handleCloseModal}>
+                            <CancelIcon />
+                        </IconButton>
+                    }
+                />
+                <div className={classes.CardContent}>
+                    <Typography variant="body1" color="textSecondary" component="p">
+                        是否確認以此卡片綁定三倍券?
+                    </Typography>
+                    <Button style={{ backgroundColor: "rgb(37,151,226)", color: "#fff" }} onClick={this.handleConfirm}>確認</Button>
+                </div>
+            </Card>);
         return (
             <div className={classes.root}>
-                <List subheader={<ListSubheader>綁定信用卡</ListSubheader>} className={classes.root}>
+                <List subheader={<ListSubheader>{this.state.type === "setone" ? `選擇三倍券綁定的信用卡` : `綁定信用卡`}</ListSubheader>} className={classes.root}>
                     <Divider />
                     {list}
                 </List>
-                {/* {modal} */}
+                <Modal
+                    open={this.state.modalOpen}
+                    onClose={this.handleCloseModal}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    {modal}
+                </Modal>
             </div>
         )
     }
 }
-export default withStyles(useStyles)(SelectCard)
+export default withRouter(withStyles(useStyles)(SelectOneCard))

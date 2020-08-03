@@ -56,17 +56,11 @@ class Setting extends Component {
         this.state = {
             OS: undefined,
             user: {
-                lineID: "無法載入使用者",
-                displayName: "無法載入使用者",
+                lineID: "",
+                displayName: "Toby",
                 userImage: undefined,
-                phone: undefined,
                 email: undefined,
-                city: undefined,
-                favos: [],
                 ownCards: [],
-                ownPays: [],
-                tripleType: undefined,
-                tripleCardorPayID: undefined,
             },
             bank_list: [],
             card_list: [],
@@ -267,21 +261,22 @@ class Setting extends Component {
                                 <UserCards
                                     {...props}
                                     updateUserCards={this.updateUserCards}
-                                    bank_list={this.state.bank_list}
-                                    card_list={this.state.card_list}
+                                    // bank_list={this.state.bank_list}
+                                    // card_list={this.state.card_list}
+                                    bankList={banks}
+                                    cardList={cards}
+                                    userName = {this.state.user.displayName}
                                     ownCards={this.state.user.ownCards} />
                             )} />
-                        <Route exact={true} path="/card"
+                        <Route exact={true} path="/selectcard"
                             render={(props) => (
                                 <SelectCard
                                     {...props}
                                     updateUserCards={this.updateUserCards}
-                                    bank_list={this.state.bank_list}
-                                    card_list={this.state.card_list}
-                                    ownCards={this.state.user.ownCards}
-                                    tripleType={this.state.user.tripleType}
-                                    tripleCardorPayID={this.state.user.tripleCardorPayID}
-                                    pay_list={this.state.pay_list} />
+                                    bankList={banks}
+                                    cardList={cards}
+                                    userName = {this.state.user.displayName}
+                                    ownCards={this.state.user.ownCards}/>
                             )} />
                     </Switch>
                 </div >

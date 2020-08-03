@@ -8,7 +8,7 @@ import more from '../assets/images/more.svg';
 
 const useStyles = (theme) => ({
     root: {
-        width: "100%",
+        width: "15vw",
     },
     iconButton: {
         paddingTop: "1vw",
@@ -72,8 +72,8 @@ class More extends Component {
                         onClose={this.handleMoreClose}
                         PaperProps={{
                             style: {
-                                width: '30vw',
-                                marginRight: "10vw"
+                                width: '20.5vw',
+                                padding: '0 2vw',
                             },
                         }}
                     >

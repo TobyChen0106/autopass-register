@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import emptyImage from '../assets/images/empty.png';
+import { Link } from 'react-router-dom';
 
 const useStyles = (theme) => ({
     root: {
@@ -79,7 +80,7 @@ class UserCardEmpty extends Component {
                     <b>您尚未儲存信用卡</b>
                 </div>
                 <div className={classes.moreCard}>
-                    <Button className={classes.moreCardButton}><b>馬上去新增信用卡</b></Button>
+                    <Button component={Link} to={'/selectcard'} className={classes.moreCardButton}><b>馬上去新增信用卡</b></Button>
                 </div>
             </div>
         )

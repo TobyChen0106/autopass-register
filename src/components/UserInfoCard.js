@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import more from '../assets/images/more.svg';
+import { Link } from 'react-router-dom';
 
 const useStyles = (theme) => ({
     root: {
@@ -16,7 +17,8 @@ const useStyles = (theme) => ({
         color: "#3c3c3c"
     },
     infoCard: {
-        height: "24vw",
+        // height: "24vw",
+        height: "auto",
         border: "1px solid #cacaca",
         borderRadius: "5vw",
         margin: "3vw 0",
@@ -25,24 +27,25 @@ const useStyles = (theme) => ({
         justifyContent: "space-between",
     },
     user: {
-        marginTop:"3vw",
-        width: "25vw",
+        marginTop: "2.2vw",
+        width: "30vw",
     },
     userName: {
         fontSize: "7vw",
+        wordWrap: "break-all",
     },
     userCards: {
         fontSize: "3.8vw",
     },
     moreCardContainer: {
-        width: "45vw",
+        width: "40vw",
         position: "relative",
     },
     moreCard: {
         position: "absolute",
         top: "50%",
         left: "50%",
-        transform: "translate(-40%, -50%)",
+        transform: "translate(-50%, -50%)",
     },
     moreCardButton: {
         width: "38vw",
@@ -89,7 +92,7 @@ class UserInfoCard extends Component {
                     </div>
                     <div className={classes.moreCardContainer}>
                         <div className={classes.moreCard}>
-                            <Button className={classes.moreCardButton}><b>+更多信用卡</b></Button>
+                            <Button component={Link} to={'/selectcard'} className={classes.moreCardButton}><b>+更多信用卡</b></Button>
                         </div>
                     </div>
                 </div>
