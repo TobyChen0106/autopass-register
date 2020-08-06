@@ -23,29 +23,15 @@ import autopass_logo from '../images/logo.png';
 // gliderjs
 import 'glider-js/glider.min.css';
 import Glider from 'react-glider';
+import randomColor from 'randomcolor';
 
-const responsive = {
-    superLargeDesktop: {
-        // the naming can be any, depends on you.
-        breakpoint: { max: 4000, min: 3000 },
-        items: 2.5
-    },
-    desktop: {
-        breakpoint: { max: 3000, min: 1024 },
-        items: 2.5
-    },
-    tablet: {
-        breakpoint: { max: 1024, min: 464 },
-        items: 2.5
-    },
-    mobile: {
-        breakpoint: { max: 464, min: 0 },
-        items: 2.5
-    }
-};
+import SelectCardSearch from './SelectCardSearch';
 
 const useStyles = (theme) => ({
     root: {
+        width: "100vw",
+    },
+    cardListContainer: {
         width: "95vw",
         paddingLeft: "5vw"
     },
@@ -86,44 +72,38 @@ const useStyles = (theme) => ({
         overflow: "hidden",
         transition: "height 0.3s ease-in-out",
     },
-    card: {
-        width: "35vw",
-        margin: "5%",
-        display: "flex col",
+    cardRoot: {
+        position: "relative",
+
+
+        display: "flex",
+        flexDirection: "column",
         alignItems: "center"
     },
     cardImageHolder: {
-        width: "100%",
-        height: 'auto',
-        // maxWidth: "100%",
-        // boxShadow: "0 0 5px 5px #2fc4b2",
-    },
-    cardImage: {
-        width: "100%",
-        borderRadius: "2.5vw",
-    },
-    cardName: {
-        marginTop: "0.6rem",
-        fontSize: "0.8rem",
         display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
-        alignItems: "center"
+        width: "36vw",
+        height: "24vw",
+        borderRadius: "3vw",
     },
-    modalImageHolder: {
-        // position: "absolute",
-        // top: "50%",
-        // left: "50%",
-        // transform: "translate(-50%, -50%)"
+    // cardImage: {
+    //     width: "100%",
+    //     borderRadius: "3vw"
+    // },
+    cardName: {
+        fontSize: "0.8rem",
     },
-    modalImage: {
-        width: "80vw",
-        marginLeft: "10vw",
-        marginRight: "10vw",
+    doneIcone: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        color: "#fff",
     },
-    modalImageText: {
-        display: "flex",
-        justifyContent: "center"
-    },
+
     loading: {
         width: "100vw",
         height: "100vh",
@@ -156,16 +136,28 @@ class SelectCard extends Component {
         super(props);
         this.state = {
             showBankdCarouselIndex: null,
+            cardList: [],
             loading: true,
         }
         this.gliderRef = createRef();
     }
     componentDidMount = () => {
         window.scrollTo(0, 0);
+        let cardList = this.props.cardList;
+        for (let i = 0; i < cardList.length; ++i) {
+            cardList[i].cardColor = randomColor({ luminosity: 'light' });
+        }
+        let bankList = this.props.bankList;
+        for (let i = 0; i < bankList.length; ++i) {
+            bankList[i].bankRef = createRef();
+        }
+        this.setState({ cardList: cardList, loading: false });
+
+        // setInterval(() => this.setState({ loading: false }), 1000);
     }
 
     handleSelectBank = (e, bankID) => {
-        e.preventDefault();
+        // e.preventDefault();
         if (bankID === this.state.showBankdCarouselIndex) {
             this.setState({ showBankdCarouselIndex: null })
         } else {
@@ -174,46 +166,36 @@ class SelectCard extends Component {
     }
 
     handleSelectCard = (e, cardID, cardName) => {
-        e.preventDefault();
+        // e.preventDefault();
         this.props.updateUserCards(cardID, cardName);
-    }
-
-    handleCloseModal = () => {
-        this.setState({ showSelectedCardIndex: null })
-    }
-    componentDidMount = () => {
-        setInterval(() => this.setState({ loading: false }), 1000);
     }
 
     render() {
         const { classes } = this.props;
         const list = this.props.bankList.filter(b => b.BankCards.length !== 0 && b.BankName !== "電子票證").map((bank, index) => {
-            const cardCarouselStyle = bank._id === this.state.showBankdCarouselIndex ? { height: "35vw" } : { height: "0" };
+            const cardCarouselStyle = bank._id === this.state.showBankdCarouselIndex ? { height: "30vw" } : { height: "0" };
+            const carouselCards = this.state.cardList.filter(c => c.BankID === bank._id).map(
+                (card, index) => {
+                    const select_filter = this.props.ownCards.find(oc => oc === card._id) ? `brightness(40%)` : `brightness(100%)`;
+                    const doneIcon = this.props.ownCards.find(oc => oc === card._id) ? `visible` : `hidden`;
+                    return (
+                        <div className={classes.cardRoot} onClick={e => this.handleSelectCard(e, card._id, card.CardName)}>
+                            <div className={classes.cardImageHolder} style={{ backgroundColor: card.cardColor, filter: select_filter }}>
+                                <div className={classes.cardName}>
+                                    {card.CardName}
+                                </div>
 
-            const carouselCards = (bank._id === this.state.showBankdCarouselIndex) ? (this.props.cardList.filter(c => c.BankID === bank._id).map(
-                card => (<div>{card.CardName}</div>)
-            )) :
-                (
-                    <>
-                        <div>
-                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
-                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
+                            </div>
+                            <div className={classes.doneIcone} style={{ visibility: doneIcon }}>
+                                <DoneIcon />
+                            </div>
                         </div>
-                        <div>
-                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
-                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
-                        </div>
-                        <div>
-                            <Skeleton variant="rect" width={"40vw"} height={"20vw"} />
-                            <Skeleton variant="text" width={"30vw"} style={{ marginLeft: "5vw" }} />
-                        </div>
-                    </>
-                )
-
-            const carousel = (<Glider ref={this.gliderRef}
+                    )
+                })
+            const carousel = (<Glider ref={bank.bankRef}
                 className={classes.glider}
-                slidesToShow={2.5}
-                slidesToScroll={10}>
+                slidesToShow={2.7}
+                slidesToScroll={carouselCards.length / 2.7}>
                 {carouselCards}
             </Glider>);
 
@@ -234,7 +216,8 @@ class SelectCard extends Component {
                     <Divider />
                 </>
             )
-        })
+        });
+
         if (this.state.loading) {
             return (
                 <div className={classes.loading}>
@@ -250,7 +233,14 @@ class SelectCard extends Component {
         } else {
             return (
                 <div className={classes.root}>
-                    {list}
+                    <SelectCardSearch
+                        searchTitle={`加入更多信用卡優惠`}
+                        searchContent={`你可以一次加入多張卡片，下次使用「我的信用卡優惠」就能一次查看啦!`}
+                        cardList={this.state.cardList}
+                    />
+                    <div className={classes.cardListContainer}>
+                        {list}
+                    </div>
                 </div>
             )
         }

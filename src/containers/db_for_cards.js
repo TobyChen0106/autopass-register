@@ -26,7 +26,7 @@ export const cards = banks.map((bank, indexb) => (
             CardName: `${bank.BankName}-card-${card}`,
             ServiceAgent: "VISA",
             CardGrade: "",
-            CardImage: '/images/cards/card-01.jpg',
+            CardImage: 'https://res.cloudinary.com/value-penguin/image/upload/c_limit,dpr_1.0,f_auto,h_1600,q_auto,w_1600/v1/unavailable-card-update_c5bzxf.png',
             BankID: bank._id,
             Offers: []
         }

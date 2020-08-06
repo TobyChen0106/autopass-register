@@ -64,7 +64,6 @@ class Setting extends Component {
             },
             bank_list: [],
             card_list: [],
-            pay_list: [],
             loadingUser: true,
             loadingCard: true,
             loadingBank: true,
@@ -209,32 +208,33 @@ class Setting extends Component {
         if (this.state.user.ownCards.find(c => c === cardID)) {
             new_user.ownCards = this.state.user.ownCards.filter(c => c !== cardID)
         } else {
-            this.props.alert.success(`已綁定: ${cardName}`);
+            this.props.alert.success(`${cardName}`);
             new_user.ownCards = [cardID, ...this.state.user.ownCards]
         }
-        fetch('/api/updateUser', {
-            method: 'POST',
-            body: JSON.stringify(new_user),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        }).catch(function (error) {
-            console.log("[Error] " + error);
-        }).then(
-            res => {
-                if (res.ok) {
-                    console.log("ok")
-                    return res.json()
-                }
-                else {
-                    return null;
-                }
-            }
-        ).then((data) => {
-            this.setState(
-                { user: data }
-            );
-        });
+        this.setState({user: new_user});
+        // fetch('/api/updateUser', {
+        //     method: 'POST',
+        //     body: JSON.stringify(new_user),
+        //     headers: new Headers({
+        //         'Content-Type': 'application/json'
+        //     })
+        // }).catch(function (error) {
+        //     console.log("[Error] " + error);
+        // }).then(
+        //     res => {
+        //         if (res.ok) {
+        //             console.log("ok")
+        //             return res.json()
+        //         }
+        //         else {
+        //             return null;
+        //         }
+        //     }
+        // ).then((data) => {
+        //     this.setState(
+        //         { user: data }
+        //     );
+        // });
     }
 
     render() {
