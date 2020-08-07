@@ -47,8 +47,8 @@ const useStyles = (theme) => ({
         borderRadius: "7vw"
     },
     cardNameHolder: {
-        width:"82vw",
-        height:"8vw",
+        width: "82vw",
+        height: "8vw",
         position: "relative",
     },
     cardName: {
@@ -70,7 +70,7 @@ class UserCardList extends Component {
         const { classes } = this.props;
         const userCards = this.props.cardList.filter(c => this.props.userCards.find(_c => _c === c._id)).map((card, index) => {
             const bank = this.props.bankList.find(b => b._id === card.BankID);
-            console.log(bank);
+            console.log(bank)
             return (
                 <div className={classes.userCard}>
                     <div className={classes.userCardHeader}>
@@ -78,7 +78,7 @@ class UserCardList extends Component {
                         <div className={classes.bankName}>
                             {bank.BankName}
                         </div>
-                        <More />
+                        <More handleDeleteCard={(e) => this.props.handleDeleteCard(e, card._id)} />
                     </div>
                     <div className={classes.cardImageHolder}>
                         <img className={classes.cardImage} src={card.CardImage} alt="User Cards" />

@@ -26,7 +26,7 @@ const alertStyle = {
 
 const addCardTemplate = ({ message, options, style, close }) => {
   return (
-    <div style={{ ...alertStyle, ...style }}>
+    <div style={{ ...alertStyle, ...style }} onClick={close}>
       <span style={{ marginBottom: "2vw" }}>{`成功加入`}</span>
       <span >{message}</span>
     </div>

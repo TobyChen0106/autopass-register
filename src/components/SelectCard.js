@@ -27,6 +27,9 @@ import randomColor from 'randomcolor';
 
 import SelectCardSearch from './SelectCardSearch';
 
+// sticky
+import { StickyContainer, Sticky } from 'react-sticky';
+
 const useStyles = (theme) => ({
     root: {
         width: "100vw",
@@ -55,13 +58,6 @@ const useStyles = (theme) => ({
     expandMore: {
         width: "12vw",
     },
-    doneIcone: {
-        width: "20px",
-        height: "20px",
-        backgroundColor: "#5CA9F8",
-        color: "white",
-        borderRadius: "50%",
-    },
     glider: {
         height: "35vw",
     },
@@ -69,30 +65,26 @@ const useStyles = (theme) => ({
         borderRadius: "5vw",
     },
     carouselHolder: {
+        height: "30vw",
         overflow: "hidden",
-        transition: "height 0.3s ease-in-out",
+        transition: "height 0.5s ease-in-out",
     },
     cardRoot: {
         position: "relative",
-
-
         display: "flex",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
+        minWidth: "36vw",
     },
     cardImageHolder: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "36vw",
+        width: "34vw",
         height: "24vw",
         borderRadius: "3vw",
     },
-    // cardImage: {
-    //     width: "100%",
-    //     borderRadius: "3vw"
-    // },
     cardName: {
         fontSize: "0.8rem",
     },
@@ -103,7 +95,13 @@ const useStyles = (theme) => ({
         transform: "translate(-50%, -50%)",
         color: "#fff",
     },
-
+    allBankTitle: {
+        marginLeft: "9vw",
+        // marginTop: "5vw",
+        marginBottom: "2vw",
+        fontSize: "6vw",
+        color: "#3c3c3c"
+    },
     loading: {
         width: "100vw",
         height: "100vh",
@@ -136,13 +134,13 @@ class SelectCard extends Component {
         super(props);
         this.state = {
             showBankdCarouselIndex: null,
+            preShowBankdCarouselIndex: null,
             cardList: [],
             loading: true,
         }
         this.gliderRef = createRef();
     }
     componentDidMount = () => {
-        window.scrollTo(0, 0);
         let cardList = this.props.cardList;
         for (let i = 0; i < cardList.length; ++i) {
             cardList[i].cardColor = randomColor({ luminosity: 'light' });
@@ -150,23 +148,34 @@ class SelectCard extends Component {
         let bankList = this.props.bankList;
         for (let i = 0; i < bankList.length; ++i) {
             bankList[i].bankRef = createRef();
+            bankList[i].bankGliderRef = createRef();
         }
-        this.setState({ cardList: cardList, loading: false });
-
-        // setInterval(() => this.setState({ loading: false }), 1000);
+        let popularCardList = cardList.filter((c, index) => index < 10);
+        let popularBankList = bankList.filter((b, index) => index < 10);
+        this.setState({
+            bankList: bankList,
+            cardList: cardList,
+            popularCardList: popularCardList,
+            popularBankList: popularBankList,
+            loading: false
+        });
     }
 
     handleSelectBank = (e, bankID) => {
-        // e.preventDefault();
+        e.preventDefault();
         if (bankID === this.state.showBankdCarouselIndex) {
-            this.setState({ showBankdCarouselIndex: null })
+            this.setState({ showBankdCarouselIndex: null, preShowBankdCarouselIndex: bankID });
         } else {
-            this.setState({ showBankdCarouselIndex: bankID })
+            this.setState({ showBankdCarouselIndex: bankID, preShowBankdCarouselIndex: this.state.showBankdCarouselIndex });
         }
     }
 
+    handleSearchBank = (e, bankID) => {
+        e.preventDefault();
+        this.setState({ showBankdCarouselIndex: bankID});
+    }
+
     handleSelectCard = (e, cardID, cardName) => {
-        // e.preventDefault();
         this.props.updateUserCards(cardID, cardName);
     }
 
@@ -184,7 +193,6 @@ class SelectCard extends Component {
                                 <div className={classes.cardName}>
                                     {card.CardName}
                                 </div>
-
                             </div>
                             <div className={classes.doneIcone} style={{ visibility: doneIcon }}>
                                 <DoneIcon />
@@ -192,16 +200,19 @@ class SelectCard extends Component {
                         </div>
                     )
                 })
-            const carousel = (<Glider ref={bank.bankRef}
-                className={classes.glider}
-                slidesToShow={2.7}
-                slidesToScroll={carouselCards.length / 2.7}>
-                {carouselCards}
-            </Glider>);
+            const carousel = bank._id === this.state.showBankdCarouselIndex || bank._id === this.state.preShowBankdCarouselIndex ?
+                (<Glider
+                    ref={bank.bankGliderRef}
+                    className={classes.glider}
+                    slidesToShow={2.7}
+                    slidesToScroll={carouselCards.length / 2.7}
+                >
+                    {carouselCards}
+                </Glider>) : (<div className={classes.glider} />);
 
             return (
                 <>
-                    <div className={classes.userCardHeader} id={`bank-div-${bank._id}`} onClick={(e) => this.handleSelectBank(e, bank._id)}>
+                    <div className={classes.userCardHeader} id={`bank-div-${bank._id}`} onClick={(e) => this.handleSelectBank(e, bank._id)} ref={bank.bankRef}>
                         <Avatar variant="rounded" className={classes.bankImage} src={bank.BankImage}>{classes.bankName}</Avatar>
                         <div className={classes.bankName}>
                             {bank.BankName}
@@ -210,7 +221,7 @@ class SelectCard extends Component {
                             <ExpandMoreIcon />
                         </IconButton>
                     </div>
-                    <div className={classes.carouselHolder} style={cardCarouselStyle}>
+                    <div className={classes.carouselHolder} style={cardCarouselStyle} >
                         {carousel}
                     </div>
                     <Divider />
@@ -233,14 +244,25 @@ class SelectCard extends Component {
         } else {
             return (
                 <div className={classes.root}>
-                    <SelectCardSearch
-                        searchTitle={`加入更多信用卡優惠`}
-                        searchContent={`你可以一次加入多張卡片，下次使用「我的信用卡優惠」就能一次查看啦!`}
-                        cardList={this.state.cardList}
-                    />
-                    <div className={classes.cardListContainer}>
-                        {list}
-                    </div>
+                    <StickyContainer>
+                        <SelectCardSearch
+                            searchTitle={`加入更多信用卡優惠`}
+                            searchContent={`你可以一次加入多張卡片，下次使用「我的信用卡優惠」就能一次查看啦!`}
+                            ownCards={this.props.ownCards}
+                            cardList={this.state.cardList}
+                            bankList={this.state.bankList}
+                            popularBankList={this.state.popularBankList}
+                            popularCardList={this.state.popularCardList}
+                            handleSearchBank={this.handleSearchBank}
+                            handleSelectCard={this.handleSelectCard}
+                        />
+                        <div className={classes.allBankTitle}>
+                            <b>銀行全覽</b>
+                        </div>
+                        <div className={classes.cardListContainer}>
+                            {list}
+                        </div>
+                    </StickyContainer>
                 </div>
             )
         }

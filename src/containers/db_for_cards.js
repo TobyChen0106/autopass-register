@@ -15,7 +15,7 @@ export const banks = bank_list.map((i, index) => (
         BankName: bank_list[index],
         BankImage: '/images/banks/e.sun-bank.jpg',
         BankCode: `${index}`,
-        BankCards: card_list,
+        BankCards: card_id_list.map((card, indexc) => (`card${index * 20 + indexc}`)),
     }
 ));
 

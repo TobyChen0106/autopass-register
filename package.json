@@ -23,8 +23,11 @@
     "react-router-dom": "^5.2.0",
     "react-router-transition-switch": "^1.1.2",
     "react-scripts": "3.4.1",
+    "react-scroll-to-component": "^1.0.2",
+    "react-sticky": "^6.0.3",
     "react-window": "^1.8.5",
-    "short-uuid": "^3.1.1"
+    "short-uuid": "^3.1.1",
+    "smoothscroll-polyfill": "^0.4.4"
   },
   "scripts": {
     "start": "node server.js",

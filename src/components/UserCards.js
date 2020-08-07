@@ -69,13 +69,12 @@ class UserCard extends Component {
     }
 
     handleDeleteCard = (e, cardID) => {
-        console.log("delete")
         e.preventDefault()
         this.props.updateUserCards(cardID)
     }
     render() {
         const { classes } = this.props;
-        const usercard = this.state.userCards.length === 0 ?
+        const usercard = this.props.ownCards.length === 0 ?
             (<UserCardEmpty
                 userCards={this.props.ownCards}
                 cardList={this.props.cardList}
@@ -85,6 +84,7 @@ class UserCard extends Component {
                 userCards={this.props.ownCards}
                 cardList={this.props.cardList}
                 bankList={this.props.bankList}
+                handleDeleteCard={this.handleDeleteCard}
             />);
         return (
             <div className={classes.root} >

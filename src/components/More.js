@@ -49,10 +49,11 @@ class More extends Component {
         this.setState({ openMore: true, anchorEl: e.currentTarget })
     }
     handleMoreClose = () => {
-        this.setState({ openMore: false })
+        this.setState({ openMore: false });
     }
-    handleDeleteCard = () => {
-
+    handleDeleteCard = (e) => {
+        this.setState({ openMore: false });
+        this.props.handleDeleteCard(e);
     }
     render() {
         const { classes } = this.props;
@@ -77,7 +78,7 @@ class More extends Component {
                             },
                         }}
                     >
-                        <Button onClick={(e) => this.handleDeleteCard(e)}>
+                        <Button onClick={this.handleDeleteCard}>
                             刪除卡片
                         </Button>
                     </Menu>
