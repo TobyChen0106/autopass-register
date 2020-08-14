@@ -30,7 +30,7 @@ db.once('open', () => {
 app.use(bodyParser.json())
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'build')));
-app.use('/api', apiRoute);
+// app.use('/api', apiRoute);
 
 
 app.get('/ping', function (req, res) {
