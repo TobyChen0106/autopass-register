@@ -92,7 +92,7 @@ class UserInfoCard extends Component {
                     </div>
                     <div className={classes.moreCardContainer}>
                         <div className={classes.moreCard}>
-                            <Button component={Link} to={'/selectcard'} className={classes.moreCardButton}><b>+更多信用卡</b></Button>
+                            <Button component={Link} to={'/cards/selectcard'} className={classes.moreCardButton}><b>+更多信用卡</b></Button>
                         </div>
                     </div>
                 </div>

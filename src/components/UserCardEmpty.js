@@ -80,7 +80,7 @@ class UserCardEmpty extends Component {
                     <b>您尚未儲存信用卡</b>
                 </div>
                 <div className={classes.moreCard}>
-                    <Button component={Link} to={'/selectcard'} className={classes.moreCardButton}><b>馬上去新增信用卡</b></Button>
+                    <Button component={Link} to={'/cards/selectcard'} className={classes.moreCardButton}><b>馬上去新增信用卡</b></Button>
                 </div>
             </div>
         )

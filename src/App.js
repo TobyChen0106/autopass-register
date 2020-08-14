@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Setting from './containers/Setting';
+import Router from './containers/Router';
 
 import { BrowserRouter } from "react-router-dom";
 import { positions, Provider } from "react-alert";
@@ -33,6 +33,15 @@ const addCardTemplate = ({ message, options, style, close }) => {
   )
 }
 
+const warningTemplate = ({ message, options, style, close }) => {
+  return (
+    <div style={{ ...alertStyle, ...style }} onClick={close}>
+      <span style={{ marginBottom: "2vw" }}>{`成功加入`}</span>
+      <span >{message}</span>
+    </div>
+  )
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +50,7 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <Provider template={addCardTemplate} {...options}>
-          <Setting />
+          <Router />
         </Provider>
       </BrowserRouter>
     );

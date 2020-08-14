@@ -2,16 +2,19 @@ import React, { Component, useRef, createRef } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import DoneIcon from '@material-ui/icons/Done';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ClearIcon from '@material-ui/icons/Clear';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import { Link, Redirect } from "react-router-dom";
 // gliderjs
 import 'glider-js/glider.min.css';
 import Glider from 'react-glider';
 
 // sticker
-import { StickyContainer, Sticky } from 'react-sticky';
+import { Sticky } from 'react-sticky';
 
 const useStyles = (theme) => ({
     root: {
@@ -20,12 +23,24 @@ const useStyles = (theme) => ({
     sticky: {
         zIndex: 100,
     },
+    backButtonHolder: {
+        marginTop: "3vw",
+        marginLeft: "3vw",
+        width: "90vw",
+        // height: "5vw",
+    },
+    backButton: {
+        width: "4vw",
+        height: "4vw",
+    },
     title: {
+        display: "flex",
+        alignItems: "center",
         color: "#3c3c3c",
         fontSize: "7vw",
         width: "82vw",
         marginLeft: "9vw",
-        marginTop: "5vw",
+        // marginTop: "3vw",
         marginBottom: "1.5vw",
     },
     content: {
@@ -90,7 +105,6 @@ const useStyles = (theme) => ({
         maxHeight: "100vh",
         padding: "0 2vw",
         margin: "0 2vw",
-        // marginBottom: "10vw",
         backgroundColor: "#fff",
         border: "1px solid #f5f5f5",
         zIndex: 100,
@@ -178,12 +192,13 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "34vw",
-        height: "24vw",
+        width: "35vw",
+        height: "auto",
+        padding: "3vw",
         borderRadius: "3vw",
     },
-    cardName: {
-        fontSize: "0.8rem",
+    cardImage: {
+        width: "100%",
     },
     doneIcone: {
         position: "absolute",
@@ -214,11 +229,11 @@ class SelectCard extends Component {
 
     handleSearchInputChange = (e, placeholder) => {
         const userInput = placeholder ? placeholder : e.target.value;
-        const cardSearchResult = userInput === "" ? [] : this.props.cardList.filter(c => c.CardName.includes(userInput)).map((card, index) => {
-            return { type: "card", matchPercent: userInput.length / card.CardName.length, cardName: card.CardName, cardID: card._id };
+        const cardSearchResult = userInput === "" ? [] : this.props.cardList.filter(c => c.cardname.toLowerCase().includes(userInput.toLowerCase())).map((card, index) => {
+            return { type: "card", matchPercent: userInput.length / card.cardname.length, cardName: card.cardname, cardID: card.id };
         });
-        const bankSearchResult = userInput === "" ? [] : this.props.bankList.filter(b => b.BankName.includes(userInput)).map((bank, index) => {
-            return { type: "bank", matchPercent: userInput.length / bank.BankName.length, bankName: bank.BankName, bankID: bank._id };
+        const bankSearchResult = userInput === "" ? [] : this.props.bankList.filter(b => b.bankname.toLowerCase().includes(userInput.toLowerCase())).map((bank, index) => {
+            return { type: "bank", matchPercent: userInput.length / bank.bankname.length, bankName: bank.bankname, bankID: bank.id };
         });
         this.setState({ searchInputValue: userInput, searchResult: cardSearchResult.concat(bankSearchResult).sort(this.sortSearchResult) });
     }
@@ -236,17 +251,16 @@ class SelectCard extends Component {
         e.preventDefault();
         this.setState({ searchInputValue: name, searchResult: [] });
         if (type === "bank") {
-            const result = this.props.bankList.find(b => b._id === id);
+            const resultBank = this.props.bankList.find(b => b.id === id);
             this.props.handleSearchBank(e, id);
-            result.bankRef.current.scrollIntoView({ block: 'center' });
-        } else if (type === "card") {
-            const resultCard = this.props.cardList.find(c => c._id === id);
-            const resultBank = this.props.bankList.find(b => b._id === resultCard.BankID);
-            const resultCardIndex = resultBank.BankCards.findIndex(c => c === resultCard._id);
-            this.props.handleSearchBank(e, resultBank._id);
             resultBank.bankRef.current.scrollIntoView({ block: 'center' });
-            console.log(resultCard._id, resultCardIndex);
-            resultBank.bankGliderRef.current.scrollItem(resultCardIndex);
+        } else if (type === "card") {
+            const resultCard = this.props.cardList.find(c => c.id === id);
+            const resultBank = this.props.bankList.find(b => b.id === resultCard.bankid);
+            const resultCardIndex = this.props.cardList.filter(c => c.bankid === resultBank.id).findIndex(c => c.id === resultCard.id);
+            this.props.handleSearchBank(e, resultBank.id);
+            resultBank.bankRef.current.scrollIntoView({ block: 'center' });
+            setTimeout(() => resultBank.bankGliderRef.current.scrollItem(resultCardIndex), 500);
         }
     }
 
@@ -271,19 +285,22 @@ class SelectCard extends Component {
         });
         const popularBankList = this.props.popularBankList.map((bank, index) => (
             <div className={classes.popularBankListItemHolder}>
-                <Button className={classes.popularBankListItem} onClick={(e) => this.searchCardorBank(e, "bank", bank.BankName, bank._id)}>
-                    {bank.BankName}
+                <Button className={classes.popularBankListItem} onClick={(e) => this.searchCardorBank(e, "bank", bank.bankname, bank.id)}>
+                    {bank.bankname}
                 </Button>
             </div>
         ));
         const popularCardList = this.props.popularCardList.map((card, index) => {
-            const select_filter = this.props.ownCards.find(oc => oc === card._id) ? `brightness(40%)` : `brightness(100%)`;
-            const doneIcon = this.props.ownCards.find(oc => oc === card._id) ? `visible` : `hidden`;
+            const select_filter = this.props.ownCards.find(oc => oc === card.id) ? `brightness(40%)` : `brightness(100%)`;
+            const doneIcon = this.props.ownCards.find(oc => oc === card.id) ? `visible` : `hidden`;
             return (
-                <div className={classes.cardRoot} onClick={e => this.props.handleSelectCard(e, card._id, card.CardName)}>
+                <div className={classes.cardRoot} onClick={e => this.props.handleSelectCard(e, card.id, card.cardname)}>
                     <div className={classes.cardImageHolder} style={{ backgroundColor: card.cardColor, filter: select_filter }}>
-                        <div className={classes.cardName}>
-                            {card.CardName}
+                        {/* <div className={classes.cardName}>
+                            {card.cardname}
+                        </div> */}
+                        <div className={classes.cardImageHolder}>
+                            <img className={classes.cardImage} src={card.cardimage} alt="HOT Cards" style={{ backgroundColor: card.cardColor, filter: select_filter }} />
                         </div>
                     </div>
                     <div className={classes.doneIcone} style={{ visibility: doneIcon }}>
@@ -294,13 +311,18 @@ class SelectCard extends Component {
         });
         return (
             <div className={classes.root}>
+                <div className={classes.backButtonHolder}>
+                    <IconButton className={classes.backButton} component={Link} to={'/'}>
+                        <ArrowBackIosIcon />
+                    </IconButton>
+                </div>
                 <div className={classes.title}>
                     <b>{this.props.searchTitle}</b>
                 </div>
                 <div className={classes.content}>
                     {this.props.searchContent}
                 </div>
-                <Sticky className={classes.sticky}>
+                <Sticky className={classes.sticky} topOffset={80}>
                     {({
                         style,
                         isSticky
@@ -327,7 +349,6 @@ class SelectCard extends Component {
                                         <div className={classes.searchCancelIconHolder} onClick={this.cancelSearch}>
                                             <ClearIcon className={classes.searchCancelIcon} />
                                         </div>
-
                                     </div>
                                     <div className={classes.searchResultHolder} style={{ opacity: searchResultStyle }}>
                                         {searchResult}

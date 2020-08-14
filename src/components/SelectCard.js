@@ -1,22 +1,11 @@
-import React, { Component, useRef, createRef } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Link, Redirect } from "react-router-dom";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import React, { Component, createRef } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import DoneIcon from '@material-ui/icons/Done';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import ReactLoading from 'react-loading';
-import Skeleton from '@material-ui/lab/Skeleton';
 //images
 import autopass_logo from '../images/logo.png';
 
@@ -26,13 +15,15 @@ import Glider from 'react-glider';
 import randomColor from 'randomcolor';
 
 import SelectCardSearch from './SelectCardSearch';
+import Warning from './Warning';
 
 // sticky
-import { StickyContainer, Sticky } from 'react-sticky';
+import { StickyContainer } from 'react-sticky';
 
 const useStyles = (theme) => ({
     root: {
         width: "100vw",
+        marginBottom: "40vw"
     },
     cardListContainer: {
         width: "95vw",
@@ -48,6 +39,7 @@ const useStyles = (theme) => ({
     bankImage: {
         marginLeft: "5vw",
         width: "12vw",
+        height: "12vw",
     },
     bankName: {
         width: "66vw",
@@ -81,12 +73,18 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "34vw",
-        height: "24vw",
+        width: "35vw",
+        height: "auto",
+        padding: "3vw",
         borderRadius: "3vw",
+    },
+    cardImage: {
+        width: "100%",
     },
     cardName: {
         fontSize: "0.8rem",
+        display: "inline-block",
+        wordBreak: "break-all"
     },
     doneIcone: {
         position: "absolute",
@@ -135,6 +133,7 @@ class SelectCard extends Component {
         this.state = {
             showBankdCarouselIndex: null,
             preShowBankdCarouselIndex: null,
+            bankList: [],
             cardList: [],
             loading: true,
         }
@@ -142,9 +141,9 @@ class SelectCard extends Component {
     }
     componentDidMount = () => {
         let cardList = this.props.cardList;
-        for (let i = 0; i < cardList.length; ++i) {
-            cardList[i].cardColor = randomColor({ luminosity: 'light' });
-        }
+        // for (let i = 0; i < cardList.length; ++i) {
+        //     cardList[i].cardColor = randomColor({ luminosity: 'light' });
+        // }
         let bankList = this.props.bankList;
         for (let i = 0; i < bankList.length; ++i) {
             bankList[i].bankRef = createRef();
@@ -172,7 +171,7 @@ class SelectCard extends Component {
 
     handleSearchBank = (e, bankID) => {
         e.preventDefault();
-        this.setState({ showBankdCarouselIndex: bankID});
+        this.setState({ showBankdCarouselIndex: bankID });
     }
 
     handleSelectCard = (e, cardID, cardName) => {
@@ -181,18 +180,22 @@ class SelectCard extends Component {
 
     render() {
         const { classes } = this.props;
-        const list = this.props.bankList.filter(b => b.BankCards.length !== 0 && b.BankName !== "電子票證").map((bank, index) => {
-            const cardCarouselStyle = bank._id === this.state.showBankdCarouselIndex ? { height: "30vw" } : { height: "0" };
-            const carouselCards = this.state.cardList.filter(c => c.BankID === bank._id).map(
+
+        const list = this.state.bankList.map((bank, index) => {
+            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "30vw" } : { height: "0" };
+            const carouselCards = this.state.cardList.filter(c => c.bankid === bank.id).map(
                 (card, index) => {
-                    const select_filter = this.props.ownCards.find(oc => oc === card._id) ? `brightness(40%)` : `brightness(100%)`;
-                    const doneIcon = this.props.ownCards.find(oc => oc === card._id) ? `visible` : `hidden`;
+                    const select_filter = this.props.ownCards.find(oc => oc === card.id) ? `brightness(40%)` : `brightness(100%)`;
+                    const doneIcon = this.props.ownCards.find(oc => oc === card.id) ? `visible` : `hidden`;
                     return (
-                        <div className={classes.cardRoot} onClick={e => this.handleSelectCard(e, card._id, card.CardName)}>
-                            <div className={classes.cardImageHolder} style={{ backgroundColor: card.cardColor, filter: select_filter }}>
+                        <div className={classes.cardRoot} onClick={e => this.handleSelectCard(e, card.id, card.cardname)}>
+                            {/* <div className={classes.cardImageHolder} style={{ backgroundColor: card.cardColor, filter: select_filter }}>
                                 <div className={classes.cardName}>
-                                    {card.CardName}
+                                    {card.cardname}
                                 </div>
+                            </div> */}
+                            <div className={classes.cardImageHolder}>
+                                <img className={classes.cardImage} src={card.cardimage} alt="User Cards" style={{ backgroundColor: card.cardColor, filter: select_filter }}/>
                             </div>
                             <div className={classes.doneIcone} style={{ visibility: doneIcon }}>
                                 <DoneIcon />
@@ -200,7 +203,7 @@ class SelectCard extends Component {
                         </div>
                     )
                 })
-            const carousel = bank._id === this.state.showBankdCarouselIndex || bank._id === this.state.preShowBankdCarouselIndex ?
+            const carousel = bank.id === this.state.showBankdCarouselIndex || bank.id === this.state.preShowBankdCarouselIndex ?
                 (<Glider
                     ref={bank.bankGliderRef}
                     className={classes.glider}
@@ -212,12 +215,12 @@ class SelectCard extends Component {
 
             return (
                 <>
-                    <div className={classes.userCardHeader} id={`bank-div-${bank._id}`} onClick={(e) => this.handleSelectBank(e, bank._id)} ref={bank.bankRef}>
-                        <Avatar variant="rounded" className={classes.bankImage} src={bank.BankImage}>{classes.bankName}</Avatar>
+                    <div className={classes.userCardHeader} id={`bank-div-${bank.id}`} onClick={(e) => this.handleSelectBank(e, bank.id)} ref={bank.bankRef}>
+                        <Avatar variant="rounded" className={classes.bankImage} src={bank.bankimage}>{classes.bankName}</Avatar>
                         <div className={classes.bankName}>
-                            {bank.BankName}
+                            {bank.bankname}
                         </div>
-                        <IconButton className={classes.expandMore} onClick={(e) => this.handleSelectBank(e, bank._id)}>
+                        <IconButton className={classes.expandMore} onClick={(e) => this.handleSelectBank(e, bank.id)}>
                             <ExpandMoreIcon />
                         </IconButton>
                     </div>
@@ -263,6 +266,7 @@ class SelectCard extends Component {
                             {list}
                         </div>
                     </StickyContainer>
+                    <Warning content="免責聲明：本站信用卡免費市區停車之優惠資訊，整理自各信用卡之官網。個別場站是否適用優惠，依現場公告為準。" />
                 </div>
             )
         }

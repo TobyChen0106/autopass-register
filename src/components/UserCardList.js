@@ -30,6 +30,7 @@ const useStyles = (theme) => ({
     },
     bankImage: {
         width: "12vw",
+        height: "12vw",
     },
     bankName: {
         width: "62vw",
@@ -68,26 +69,25 @@ class UserCardList extends Component {
 
     render() {
         const { classes } = this.props;
-        const userCards = this.props.cardList.filter(c => this.props.userCards.find(_c => _c === c._id)).map((card, index) => {
-            const bank = this.props.bankList.find(b => b._id === card.BankID);
-            console.log(bank)
+        const userCards = this.props.cardList.filter(c => this.props.userCards.find(_c => _c === c.id)).map((card, index) => {
+            const bank = this.props.bankList.find(b => b.id === card.bankid);
             return (
                 <div className={classes.userCard}>
                     <div className={classes.userCardHeader}>
-                        <Avatar variant="rounded" className={classes.bankImage} src={bank.BankImage}>{classes.bankName}</Avatar>
+                        <Avatar variant="rounded" className={classes.bankImage} src={bank.bankimage}>{classes.bankName}</Avatar>
                         <div className={classes.bankName}>
-                            {bank.BankName}
+                            {bank.bankname}
                         </div>
-                        <More handleDeleteCard={(e) => this.props.handleDeleteCard(e, card._id)} />
+                        <More handleDeleteCard={(e) => this.props.handleDeleteCard(e, card.id)} />
                     </div>
                     <div className={classes.cardImageHolder}>
-                        <img className={classes.cardImage} src={card.CardImage} alt="User Cards" />
+                        <img className={classes.cardImage} src={card.cardimage} alt="User Cards" />
                     </div>
-                    <div className={classes.cardNameHolder}>
+                    {/* <div className={classes.cardNameHolder}>
                         <div className={classes.cardName}>
-                            {card.CardName}
+                            {card.cardname}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             )
         })
