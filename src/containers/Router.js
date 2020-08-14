@@ -62,72 +62,56 @@ class Router extends Component {
             bankList: [],
             cardList: [],
             offerData: {
-                id: "10fbe1a4-0728-4902-aa1f-c8545af48ef7",
+                id: "",
                 cardid: "",
-                bankname: "中國信託",
-                cardname: "LINE POINTS 回饋卡",
-                cardimage: "https://i.imgur.com/95AInMa.png",
-                rewardmethod: "免費停車",
-                rewardconstraint: "前月新增一般消費，紅利積點1,100",
-                rewardcontent: "每日1次，每次最高折換3小時",
-                parkinglot: ["ViVi Park","台灣聯通","台灣聯通","台灣聯通","台灣聯通","台灣聯通"],
+                bankname: "",
+                cardname: "錯誤",
+                cardimage: "",
+                rewardmethod: "查無優惠資訊。",
+                rewardconstraint: "",
+                rewardcontent: "",
+                parkinglot: [],
                 rewardlink: "",
-                deeplink: "https://autopass.app.link/ojkvF9PgW8"
+                deeplink: ""
             },
-            // offerData: {
-            //     id: "",
-            //     cardid: "",
-            //     bankname: "錯誤",
-            //     cardname: "",
-            //     cardimage: "",
-            //     rewardmethod: "查無優惠資訊",
-            //     rewardconstraint: "前月新增一般消費，紅利積點1,100",
-            //     rewardcontent: "每日1次，每次最高折換3小時",
-            //     parkinglot: [],
-            //     rewardlink: "",
-            //     deeplink: ""
-            // },
-            // loadingUser: true,
-            // loadingBank: true,
-            // loadingCard: true,
-            loadingUser: false,
-            loadingBank: false,
-            loadingCard: false,
+            loadingUser: true,
+            loadingBank: true,
+            loadingCard: true,
         };
     }
     componentWillMount = () => {
         const params = new URLSearchParams(window.location.search);
         const page = params.get('page');
         const value = params.get('value');
-
         liff.init({
-            liffId: "1654462018-w48j1o5n"
+            liffId: "1654394004-vp1Nnyx0"
         }).catch(function (error) {
             console.log("[Error] " + error);
         }).then(() => {
-            // if (!liff.isLoggedIn()) {
-            //     liff.login({ redirectUri: ("https://autopass.cardbo.info/") });
-            // }
+            if (!liff.isLoggedIn()) {
+                liff.login({ redirectUri: (`https://autopass.cardbo.info/?page=${page}&value=${}`) });
+            }
         }).catch(function (error) {
             console.log("[Error] " + error);
         }).then(
-            // () => liff.getProfile()
+            () => liff.getProfile()
         ).catch(function (error) {
             console.log("[Error] " + error);
         }).then(
-            (profile2) => {
-                // const tokenData = liff.getDecodedIDToken();
-                // profile2.email = tokenData.email ? tokenData.email : "";
-                return profile2;
+            (profile) => {
+                const new_profile = profile;
+                const tokenData = liff.getDecodedIDToken();
+                new_profile.email = tokenData.email ? tokenData.email : "";
+                return new_profile;
             }
         ).catch(function (error) {
             console.log("[Error] " + error);
-        }).then((profile2) => {
-            const profile = {
-                userId: "U879a5cb6920a17888301f36935418744",
-                displayName: "Toby",
-                email: "toby@cardno.info",
-            };
+        }).then((profile) => {
+            // const profile = {
+            //     userId: "U879a5cb6920a17888301f36935418744",
+            //     displayName: "Toby",
+            //     email: "toby@cardno.info",
+            // };
             if (!profile) {
                 console.log("USER PROFILE ERROR!");
             } else {
@@ -148,6 +132,17 @@ class Router extends Component {
                             }
                             this.setState({ user: data, loadingUser: false });
                         }
+                    }).catch(error => console.log(error));
+                    axios.post('https://data.cardbo.info/autopass-api/insert-useraction/?key=j5VAcaF9fWZfmJGqjh87fD81rZUo1pZUQ1QQCqo2NAv8wsca5dPeoGtbP9A3iEZe', {
+                        lineid: profile.userId,
+                        action: "LIFF User Visit Page",
+                        value: `${page}${value ? `-${value}` : ""}`
+                    }).then(
+                        res => res.data
+                    ).then(data => {
+                        // if (data) {
+                        //     console.log(data);
+                        // }
                     }).catch(error => console.log(error));
                 } else {
                     alert("無法取得使用者ID!");
