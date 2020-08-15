@@ -164,11 +164,11 @@ const useStyles = (theme) => ({
     popularCardListHolder: {
         marginLeft: "9vw",
         marginBottom: "4vw",
-        height: "30vw",
+        height: "28vw",
         overflow: "hidden",
     },
     popularCardList: {
-        height: "35vw",
+        height: "30vw",
     },
     cardRoot: {
         position: "relative",
@@ -182,13 +182,14 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "35vw",
-        height: "auto",
-        padding: "3vw",
+        width: "33vw",
+        height: "21vw",
+        margin: "3vw",
         borderRadius: "3vw",
     },
     cardImage: {
         width: "100%",
+        height: "auto",
     },
     doneIcone: {
         position: "absolute",
@@ -281,15 +282,15 @@ class SearchSelectCardSearch extends Component {
             </div>
         ));
         const popularCardList = this.props.popularCardList.map((card, index) => {
-
+            const bank = this.props.bankList.find(b => b.id === card.bankid);
             return (
-                <div className={classes.cardRoot} onClick={e => this.props.handleSelectCard(e, card.id, card.cardname)}>
+                <div className={classes.cardRoot} onClick={e => this.props.handleSelectCard(e, card.id, bank.bankname, card.cardname)}>
                     <div className={classes.cardImageHolder} >
                         {/* <div className={classes.cardName}>
                             {card.cardname}
                         </div> */}
                         <div className={classes.cardImageHolder}>
-                            <img className={classes.cardImage} src={card.cardimage} alt="HOT Cards"/>
+                            <img className={classes.cardImage} src={card.cardimage} alt="HOT Cards" />
                         </div>
                     </div>
                 </div >

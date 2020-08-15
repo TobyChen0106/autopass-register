@@ -89,7 +89,7 @@ class Router extends Component {
             console.log("[Error] " + error);
         }).then(() => {
             if (!liff.isLoggedIn()) {
-                liff.login({ redirectUri: (`https://autopass.cardbo.info/?page=${page}&value=${}`) });
+                liff.login({ redirectUri: (`https://autopass.cardbo.info/?page=${page}&value=${value}`) });
             }
         }).catch(function (error) {
             console.log("[Error] " + error);
@@ -101,6 +101,7 @@ class Router extends Component {
             (profile) => {
                 const new_profile = profile;
                 const tokenData = liff.getDecodedIDToken();
+                // console.log(tokenData);
                 new_profile.email = tokenData.email ? tokenData.email : "";
                 return new_profile;
             }
@@ -202,7 +203,6 @@ class Router extends Component {
 
     updateUserCards = (cardID, cardName) => {
         var new_user = this.state.user;
-        console.log(new_user)
         if (this.state.user.owncards.find(c => c === cardID)) {
             new_user.owncards = this.state.user.owncards.filter(c => c !== cardID);
 
@@ -268,7 +268,7 @@ class Router extends Component {
         this.setState({ user: new_user });
     }
 
-    searchCard = (cardID, cardName, bankName) => {
+    searchCard = (cardID, bankName, cardName ) => {
         axios.post('https://data.cardbo.info/autopass-api/insert-useraction/?key=j5VAcaF9fWZfmJGqjh87fD81rZUo1pZUQ1QQCqo2NAv8wsca5dPeoGtbP9A3iEZe', {
             lineid: this.state.user.lineid,
             action: "LIFF User Search Card",
@@ -277,7 +277,7 @@ class Router extends Component {
             res => res.data
         ).then(data => {
             if (data) {
-                console.log(data);
+                // console.log(data);
             }
             liff.sendMessages([
                 {

@@ -51,13 +51,13 @@ const useStyles = (theme) => ({
         width: "12vw",
     },
     glider: {
-        height: "35vw",
+        height: "30vw",
     },
     skeletonCard: {
         borderRadius: "5vw",
     },
     carouselHolder: {
-        height: "30vw",
+        height: "28vw",
         overflow: "hidden",
         transition: "height 0.5s ease-in-out",
     },
@@ -73,13 +73,14 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "35vw",
+        width: "33vw",
         height: "auto",
-        padding: "3vw",
+        margin: "3vw",
         borderRadius: "3vw",
     },
     cardImage: {
         width: "100%",
+        height: "auto",
     },
     cardName: {
         fontSize: "0.8rem",
@@ -182,7 +183,7 @@ class SelectCard extends Component {
         const { classes } = this.props;
 
         const list = this.state.bankList.map((bank, index) => {
-            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "30vw" } : { height: "0" };
+            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "28vw" } : { height: "0" };
             const carouselCards = this.state.cardList.filter(c => c.bankid === bank.id).map(
                 (card, index) => {
                     const select_filter = this.props.ownCards.find(oc => oc === card.id) ? `brightness(40%)` : `brightness(100%)`;

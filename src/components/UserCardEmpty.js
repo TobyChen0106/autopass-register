@@ -40,6 +40,7 @@ const useStyles = (theme) => ({
     },
     moreCard: {
         width: "100%",
+        marginBottom:"10vw"
     },
     moreCardButton: {
         width: "78vw",

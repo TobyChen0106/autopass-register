@@ -48,7 +48,7 @@ const useStyles = (theme) => ({
         fontSize: "8vw"
     },
     cardImageHolder: {
-        margin: "5vw 0",
+        margin: "2vw 0",
         width: "40vw",
     },
     cardImage: {
@@ -71,7 +71,7 @@ const useStyles = (theme) => ({
         color: "#FF9F00",
         backgroundColor: "#FFF4C2",
         borderRadius: "4vw",
-        fontSize: "2vw",
+        fontSize: "3.5vw",
         color: "#FF9F00",
         '&:hover': {
             backgroundColor: '#FFF4C2',
@@ -109,10 +109,10 @@ const useStyles = (theme) => ({
         alignItems: "top",
     },
     deeplinkButton: {
-        width: "80vw",
-        height: "18vw",
+        width: "70vw",
+        height: "14vw",
         borderRadius: "9vw",
-        fontSize: "5.5vw",
+        fontSize: "5vw",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

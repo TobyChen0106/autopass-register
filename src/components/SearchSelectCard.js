@@ -51,13 +51,13 @@ const useStyles = (theme) => ({
         width: "12vw",
     },
     glider: {
-        height: "35vw",
+        height: "30vw",
     },
     skeletonCard: {
         borderRadius: "5vw",
     },
     carouselHolder: {
-        height: "30vw",
+        height: "28vw",
         overflow: "hidden",
         transition: "height 0.5s ease-in-out",
     },
@@ -73,13 +73,14 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "35vw",
-        height: "auto",
-        padding: "3vw",
+        width: "33vw",
+        height: "21vw",
+        margin: "3vw",
         borderRadius: "3vw",
     },
     cardImage: {
         width: "100%",
+        height: "auto",
     },
     cardName: {
         fontSize: "0.8rem",
@@ -142,7 +143,6 @@ class SearchSelectCard extends Component {
     componentWillMount = () => {
         let cardList = this.props.cardList;
         let bankList = this.props.bankList;
-        console.log(this.props.bankList)
         for (let i = 0; i < bankList.length; ++i) {
             bankList[i].bankRef = createRef();
             bankList[i].bankGliderRef = createRef();
@@ -172,18 +172,20 @@ class SearchSelectCard extends Component {
         this.setState({ showBankdCarouselIndex: bankID });
     }
 
-    handleSelectCard = (e, cardID, cardName, bankname) => {
-        this.props.searchCard(cardID, cardName);
+    handleSelectCard = (e, cardID, bankname, cardname) => {
+        e.preventDefault();
+        console.log(cardID, bankname, cardname)
+        this.props.searchCard(cardID, bankname, cardname);
     }
 
     render() {
         const { classes } = this.props;
         const list = this.state.bankList.map((bank, index) => {
-            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "30vw" } : { height: "0" };
+            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "vw" } : { height: "0" };
             const carouselCards = this.state.cardList.filter(c => c.bankid === bank.id).map(
                 (card, index) => {
                     return (
-                        <div className={classes.cardRoot} onClick={e => this.handleSelectCard(e, card.id, card.cardname, bank.bankname)}>
+                        <div className={classes.cardRoot} onClick={e => this.handleSelectCard(e, card.id, bank.bankname, card.cardname )}>
                             <div className={classes.cardImageHolder}>
                                 <img className={classes.cardImage} src={card.cardimage} alt="User Cards" />
                             </div>

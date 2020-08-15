@@ -174,11 +174,11 @@ const useStyles = (theme) => ({
     popularCardListHolder: {
         marginLeft: "9vw",
         marginBottom: "4vw",
-        height: "30vw",
+        height: "28vw",
         overflow: "hidden",
     },
     popularCardList: {
-        height: "35vw",
+        height: "30vw",
     },
     cardRoot: {
         position: "relative",
@@ -192,13 +192,14 @@ const useStyles = (theme) => ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "35vw",
+        width: "33vw",
         height: "auto",
-        padding: "3vw",
+        margin: "3vw",
         borderRadius: "3vw",
     },
     cardImage: {
         width: "100%",
+        height: "auto",
     },
     doneIcone: {
         position: "absolute",
