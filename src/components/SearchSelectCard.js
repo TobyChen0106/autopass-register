@@ -173,15 +173,13 @@ class SearchSelectCard extends Component {
     }
 
     handleSelectCard = (e, cardID, bankname, cardname) => {
-        e.preventDefault();
-        console.log(cardID, bankname, cardname)
         this.props.searchCard(cardID, bankname, cardname);
     }
 
     render() {
         const { classes } = this.props;
         const list = this.state.bankList.map((bank, index) => {
-            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "vw" } : { height: "0" };
+            const cardCarouselStyle = bank.id === this.state.showBankdCarouselIndex ? { height: "28vw" } : { height: "0" };
             const carouselCards = this.state.cardList.filter(c => c.bankid === bank.id).map(
                 (card, index) => {
                     return (
@@ -209,7 +207,7 @@ class SearchSelectCard extends Component {
                         <div className={classes.bankName}>
                             {bank.bankname}
                         </div>
-                        <IconButton className={classes.expandMore} onClick={(e) => this.handleSelectBank(e, bank.id)}>
+                        <IconButton className={classes.expandMore}>
                             <ExpandMoreIcon />
                         </IconButton>
                     </div>
